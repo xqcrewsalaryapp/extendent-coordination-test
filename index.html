@@ -1,0 +1,357 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="theme-color" content="#101827">
+<title>Extended Coordination Trainer</title>
+<style>
+:root {
+ --bg:#101827;--panel:#192538;--line:#34455e;
+ --text:#f3f6fc;--muted:#9eacc0;--accent:#4d8dff;
+ --green:#38c995;--orange:#ffbd4a;
+}
+*{box-sizing:border-box}
+body{
+ margin:0;background:var(--bg);color:var(--text);
+ font-family:system-ui,sans-serif;overscroll-behavior:none;
+}
+main{
+ width:100%;max-width:850px;margin:auto;
+ padding:12px 12px calc(20px + env(safe-area-inset-bottom));
+}
+header{display:flex;justify-content:space-between;align-items:center;gap:8px}
+h1{font-size:19px;margin:0}
+.sub,.small{color:var(--muted);font-size:11px}
+.panel{
+ background:var(--panel);border:1px solid var(--line);
+ border-radius:14px;padding:12px;
+}
+.dashboard{
+ display:grid;grid-template-columns:repeat(4,1fr);
+ gap:7px;margin:12px 0;
+}
+.readout{text-align:center;background:#111d2d;border-radius:10px;padding:9px 3px}
+.readout small{display:block;color:var(--muted);font-size:10px}
+.readout strong{font-size:20px;font-variant-numeric:tabular-nums}
+.instrument{display:flex;flex-direction:column;align-items:center;gap:7px}
+.horizon{
+ width:min(68vw,250px);height:min(68vw,250px);
+ border-radius:50%;overflow:hidden;
+ border:4px solid #64758c;position:relative;
+ background:#192538;touch-action:none;
+}
+#horizonInner{
+ position:absolute;inset:-50%;
+ background:linear-gradient(to bottom,#2788b9 50%,#8d663e 50%);
+ transform:rotate(0deg);
+}
+.horizonLine{
+ position:absolute;left:0;right:0;top:50%;
+ height:2px;background:white;
+}
+.aircraft{
+ position:absolute;left:50%;top:50%;
+ transform:translate(-50%,-50%);
+ width:65%;height:24px;
+ z-index:2;
+}
+.aircraft:before{
+ content:"";position:absolute;left:0;right:0;top:10px;
+ height:4px;background:#ffcf58;border-radius:4px;
+}
+.aircraft:after{
+ content:"";position:absolute;left:50%;top:0;
+ width:4px;height:24px;background:#ffcf58;
+ transform:translateX(-50%);
+}
+.controls{
+ display:grid;grid-template-columns:1fr 1fr 1.2fr;
+ gap:8px;margin-top:12px;align-items:stretch;
+}
+.control{
+ background:var(--panel);border:1px solid var(--line);
+ border-radius:14px;padding:10px 7px;
+ display:flex;flex-direction:column;align-items:center;
+ justify-content:space-between;min-width:0;
+}
+.control h3{font-size:12px;text-align:center;margin:0 0 8px}
+.control button{
+ width:100%;min-height:58px;border:1px solid #435875;
+ border-radius:11px;background:#263750;color:white;
+ font-size:25px;font-weight:bold;
+ touch-action:none;user-select:none;
+}
+.control button:active,.control button.pressed{background:var(--accent)}
+.speedValue,.yawValue{font-size:17px;font-weight:750;margin:8px 0}
+.speedTrack{
+ height:140px;width:100%;max-width:66px;
+ border-radius:13px;background:#111d2d;
+ position:relative;display:flex;align-items:center;
+ justify-content:center;overflow:hidden;
+}
+.speedFill{
+ position:absolute;bottom:0;width:100%;
+ background:linear-gradient(to top,#286bd5,#38c995);
+ opacity:.65;
+}
+.speedTrack span{position:relative;font-size:11px;font-weight:bold}
+.yawButtons{display:flex;flex-direction:column;gap:12px;width:100%;margin:auto}
+.joystick{
+ width:min(31vw,150px);height:min(31vw,150px);
+ border-radius:50%;border:2px solid #61748d;
+ background:radial-gradient(circle,#293b55,#111d2d);
+ position:relative;touch-action:none;margin:auto;
+}
+.joystick:before,.joystick:after{
+ content:"";position:absolute;background:#536782;
+}
+.joystick:before{width:1px;height:100%;left:50%}
+.joystick:after{height:1px;width:100%;top:50%}
+.knob{
+ position:absolute;width:43px;height:43px;
+ border-radius:50%;background:var(--accent);
+ border:3px solid #dce9ff;
+ left:50%;top:50%;transform:translate(-50%,-50%);
+ z-index:2;box-shadow:0 2px 12px #0008;
+}
+.joyValues{display:flex;justify-content:space-around;width:100%;gap:3px}
+.joyValues span{font-size:10px;color:var(--muted)}
+button:focus-visible{outline:2px solid var(--accent)}
+@media(max-width:390px){
+ main{padding-left:8px;padding-right:8px}
+ .controls{gap:5px}
+ .control{padding:8px 5px}
+ .control button{min-height:53px}
+ .readout strong{font-size:17px}
+}
+</style>
+</head>
+<body>
+<main>
+<header>
+ <div>
+  <h1>Extended Coordination</h1>
+  <div class="sub">MOBILE FLIGHT CONTROL TRAINER</div>
+ </div>
+ <div class="small" id="status">READY</div>
+</header>
+
+<div class="dashboard">
+ <div class="readout"><small>AIRSPEED</small><strong id="speedText">120</strong></div>
+ <div class="readout"><small>YAW</small><strong id="yawText">0°</strong></div>
+ <div class="readout"><small>PITCH</small><strong id="pitchText">0°</strong></div>
+ <div class="readout"><small>BANK</small><strong id="bankText">0°</strong></div>
+</div>
+
+<div class="panel instrument">
+ <div class="small">ARTIFICIAL HORIZON</div>
+ <div class="horizon">
+  <div id="horizonInner">
+   <div class="horizonLine"></div>
+  </div>
+  <div class="aircraft"></div>
+ </div>
+ <div class="small">ATTITUDE INDICATOR</div>
+</div>
+
+<div class="controls">
+
+ <!-- SPEED -->
+ <section class="control">
+  <h3>AIRSPEED</h3>
+  <div class="speedValue" id="speedValue">120</div>
+  <div class="speedTrack" id="speedTrack">
+   <div class="speedFill" id="speedFill" style="height:50%"></div>
+   <span>IAS</span>
+  </div>
+  <div style="display:flex;flex-direction:column;gap:7px;width:100%;margin-top:9px">
+   <button id="speedUp" aria-label="Increase speed">+</button>
+   <button id="speedDown" aria-label="Decrease speed">−</button>
+  </div>
+  <div class="small">UP / DOWN</div>
+ </section>
+
+ <!-- YAW -->
+ <section class="control">
+  <h3>YAW CONTROL</h3>
+  <div class="yawValue" id="yawValue">0°</div>
+  <div class="yawButtons">
+   <button id="yawLeft" aria-label="Yaw left">←</button>
+   <button id="yawRight" aria-label="Yaw right">→</button>
+  </div>
+  <div class="small">LEFT / RIGHT</div>
+ </section>
+
+ <!-- JOYSTICK -->
+ <section class="control">
+  <h3>PITCH / BANK</h3>
+  <div class="joystick" id="joystick">
+   <div class="knob" id="knob"></div>
+  </div>
+  <div class="joyValues">
+   <span id="pitchValue">P: 0°</span>
+   <span id="bankValue">B: 0°</span>
+  </div>
+  <div class="small">DRAG TO CONTROL</div>
+ </section>
+
+</div>
+
+<div class="panel" style="margin-top:12px">
+ <div style="display:flex;justify-content:space-between;align-items:center">
+  <strong style="font-size:13px">CONTROL STATUS</strong>
+  <button id="reset" style="width:auto;padding:7px 13px;font-size:12px">RESET</button>
+ </div>
+ <p class="small" id="controlStatus">All controls centered.</p>
+</div>
+
+</main>
+
+<script>
+(()=>{
+const $=id=>document.getElementById(id);
+
+let speed=120,yaw=0,pitch=0,bank=0;
+let joyPointer=null;
+let held={};
+let loop=null;
+
+const clamp=(v,min,max)=>Math.max(min,Math.min(max,v));
+
+function render(){
+ $('speedText').textContent=Math.round(speed);
+ $('speedValue').textContent=Math.round(speed);
+ $('yawText').textContent=Math.round(yaw)+'°';
+ $('yawValue').textContent=Math.round(yaw)+'°';
+ $('pitchText').textContent=Math.round(pitch)+'°';
+ $('bankText').textContent=Math.round(bank)+'°';
+ $('pitchValue').textContent='P: '+Math.round(pitch)+'°';
+ $('bankValue').textContent='B: '+Math.round(bank)+'°';
+
+ $('speedFill').style.height=((speed-60)/120*100)+'%';
+
+ // Artificial horizon: bank rotates the horizon,
+ // pitch moves the horizon vertically.
+ $('horizonInner').style.transform=
+  `translateY(${pitch*1.5}px) rotate(${bank}deg)`;
+
+ const active=[];
+ if(held.speedUp)active.push('Speed increasing');
+ if(held.speedDown)active.push('Speed decreasing');
+ if(held.yawLeft)active.push('Yaw left');
+ if(held.yawRight)active.push('Yaw right');
+
+ $('controlStatus').textContent=
+  active.length?active.join(' · '):
+  (joyPointer!==null?'Joystick active':'All controls centered.');
+}
+
+function tick(){
+ if(held.speedUp)speed=clamp(speed+0.8,60,180);
+ if(held.speedDown)speed=clamp(speed-0.8,60,180);
+ if(held.yawLeft)yaw=clamp(yaw-0.7,-30,30);
+ if(held.yawRight)yaw=clamp(yaw+0.7,-30,30);
+ render();
+}
+
+function holdButton(id,key){
+ const btn=$(id);
+ const start=e=>{
+  e.preventDefault();
+  held[key]=true;
+  btn.classList.add('pressed');
+  if(!loop)loop=setInterval(tick,30);
+  tick();
+ };
+ const end=e=>{
+  held[key]=false;
+  btn.classList.remove('pressed');
+  if(!Object.values(held).some(Boolean)){
+   clearInterval(loop);loop=null;
+  }
+  render();
+ };
+ btn.addEventListener('pointerdown',start);
+ ['pointerup','pointercancel','pointerleave'].forEach(ev=>
+  btn.addEventListener(ev,end)
+ );
+}
+
+holdButton('speedUp','speedUp');
+holdButton('speedDown','speedDown');
+holdButton('yawLeft','yawLeft');
+holdButton('yawRight','yawRight');
+
+// Two-axis joystick
+const stick=$('joystick');
+const knob=$('knob');
+
+function moveStick(e){
+ const rect=stick.getBoundingClientRect();
+ const centerX=rect.left+rect.width/2;
+ const centerY=rect.top+rect.height/2;
+ const radius=rect.width/2-23;
+
+ let dx=e.clientX-centerX;
+ let dy=e.clientY-centerY;
+ const distance=Math.hypot(dx,dy);
+
+ if(distance>radius){
+  dx=dx/distance*radius;
+  dy=dy/distance*radius;
+ }
+
+ knob.style.left=`calc(50% + ${dx}px)`;
+ knob.style.top=`calc(50% + ${dy}px)`;
+
+ // Vertical movement controls pitch.
+ // Horizontal movement controls bank.
+ pitch=clamp(-dy/radius*25,-25,25);
+ bank=clamp(dx/radius*45,-45,45);
+
+ render();
+}
+
+stick.addEventListener('pointerdown',e=>{
+ e.preventDefault();
+ joyPointer=e.pointerId;
+ stick.setPointerCapture(e.pointerId);
+ moveStick(e);
+});
+
+stick.addEventListener('pointermove',e=>{
+ if(e.pointerId===joyPointer)moveStick(e);
+});
+
+function releaseStick(e){
+ if(e.pointerId!==joyPointer)return;
+ joyPointer=null;
+ pitch=0;
+ bank=0;
+ knob.style.left='50%';
+ knob.style.top='50%';
+ render();
+}
+
+stick.addEventListener('pointerup',releaseStick);
+stick.addEventListener('pointercancel',releaseStick);
+
+$('reset').addEventListener('click',()=>{
+ speed=120;yaw=0;pitch=0;bank=0;
+ Object.keys(held).forEach(k=>held[k]=false);
+ clearInterval(loop);loop=null;
+ document.querySelectorAll('.control button').forEach(b=>b.classList.remove('pressed'));
+ joyPointer=null;
+ knob.style.left='50%';
+ knob.style.top='50%';
+ $('status').textContent='READY';
+ render();
+});
+
+render();
+})();
+</script>
+</body>
+</html>
