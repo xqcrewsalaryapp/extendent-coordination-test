@@ -58,8 +58,6 @@ button{font:inherit;color:inherit}
 .aircraft-symbol{position:absolute;z-index:5;left:50%;top:50%;width:88px;height:22px;transform:translate(-50%,-50%)}
 .aircraft-symbol:before{content:"";position:absolute;left:0;top:9px;width:88px;height:4px;background:var(--amber);border-radius:3px}
 .aircraft-symbol:after{content:"";position:absolute;left:41px;top:0;width:6px;height:22px;background:var(--amber);border-radius:3px}
-.bank-scale{position:absolute;z-index:7;top:7px;left:50%;transform:translateX(-50%);width:130px;text-align:center;color:#fff;font-size:10px;pointer-events:none}
-.bank-pointer{display:block;margin:3px auto 0;width:0;height:0;border-left:7px solid transparent;border-right:7px solid transparent;border-top:12px solid var(--amber)}
 .fd-command{position:absolute;z-index:6;left:50%;top:50%;width:0;height:0;pointer-events:none;will-change:transform}
 .fd-horizontal{position:absolute;width:92px;height:3px;background:var(--magenta);left:0;top:0;transform:translate(-50%,-50%);box-shadow:0 0 6px var(--magenta)}
 .fd-vertical{position:absolute;width:3px;height:58px;background:var(--magenta);left:0;top:0;transform:translate(-50%,-50%);box-shadow:0 0 6px var(--magenta)}
@@ -67,6 +65,10 @@ button{font:inherit;color:inherit}
 .pfd-top-info{position:absolute;z-index:8;top:5px;left:6px;right:6px;display:flex;justify-content:space-between;color:#fff;font-size:8px;letter-spacing:.5px;text-shadow:0 1px 3px #000;pointer-events:none}
 .pfd-bottom-info{position:absolute;z-index:8;bottom:5px;left:6px;right:6px;display:flex;justify-content:space-between;color:var(--cyan);font-size:8px;text-shadow:0 1px 3px #000;pointer-events:none}
 .pfd-mode{color:var(--magenta);font-weight:bold}
+.bank-center-readout{position:absolute;z-index:9;left:50%;top:25px;transform:translateX(-50%);padding:2px 5px;border-radius:4px;background:#050a12c9;color:var(--green);font-size:9px;font-weight:700;letter-spacing:.3px;white-space:nowrap;text-shadow:0 1px 2px #000;pointer-events:none}
+.bank-center-readout.green{color:var(--green)}
+.bank-center-readout.yellow{color:var(--amber)}
+.bank-center-readout.red{color:var(--red)}
 .heading-tape{height:42px;position:relative;overflow:hidden;background:#050a10;border-top:1px solid #718397;border-bottom:1px solid #718397}
 .heading-scale{position:absolute;inset:0;white-space:nowrap}
 .heading-mark{position:absolute;top:4px;transform:translateX(-50%);font-size:10px;color:#fff;text-align:center;font-weight:bold}
@@ -193,8 +195,8 @@ button{font:inherit;color:inherit}
       </div>
      </div>
      <div class="pfd-top-info"><span>SPD</span><span>FD</span><span>ALT</span></div>
-     <div class="bank-scale">BANK<div class="bank-pointer" id="bankPointer"></div></div>
      <div class="aircraft-symbol"></div>
+     <div class="bank-center-readout green" id="bankCenterReadout">BANK 0°</div>
      <div class="fd-command" id="fdCommand"><div class="fd-horizontal"></div><div class="fd-vertical"></div><div class="fd-dot"></div></div>
      <div class="pfd-bottom-info"><span>ATT</span><span class="pfd-mode">MANUAL</span><span>HDG</span></div>
     </div>
@@ -499,10 +501,14 @@ function newSlipEvent(){
 
 function physics(dt){
  keyboard();
- const throttleAcceleration=(S.throttle-50)*.18;
- const pitchAcceleration=-S.pitch*.12;
- const speedDamping=(S.targetSpeed-S.speed)*.003;
- S.speed=clamp(S.speed+(throttleAcceleration+pitchAcceleration+speedDamping)*dt,80,260);
+ if(S.level===1){
+  S.speed=170;
+ }else{
+  const throttleAcceleration=(S.throttle-50)*.18;
+  const pitchAcceleration=-S.pitch*.12;
+  const speedDamping=(S.targetSpeed-S.speed)*.003;
+  S.speed=clamp(S.speed+(throttleAcceleration+pitchAcceleration+speedDamping)*dt,80,260);
+ }
  S.pitch+=S.joyY*19*dt;
  S.bank+=S.joyX*35*dt;
  if(Math.abs(S.joyY)<.03)S.pitch*=Math.pow(.997,dt*60);
@@ -540,8 +546,13 @@ function render(){
  const c=config();
  $('pitchValue').textContent=Math.round(S.pitch)+'°';
  $('bankSide').textContent=Math.round(S.bank)+'°';
+ const bankAbs=Math.abs(S.bank);
+ const bankClass=bankAbs<=5?'green':bankAbs>25?'red':'yellow';
+ const bankReadout=$('bankCenterReadout');
+ bankReadout.textContent=`BANK ${Math.round(bankAbs)}°`;
+ bankReadout.classList.remove('green','yellow','red');
+ bankReadout.classList.add(bankClass);
  $('horizon').style.transform=`translateY(${S.pitch*2.1}px) rotate(${-S.bank}deg)`;
- $('bankPointer').style.transform=`rotate(${S.bank}deg)`;
  const slipPosition=50+S.slip*.20;
  $('slipBall').style.left=`${clamp(slipPosition,0,100)}%`;
  $('slipBall').classList.toggle('complete',S.slipComplete);
