@@ -1,586 +1,146 @@
+
 <!DOCTYPE html>
 <html lang="tr">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <meta name="theme-color" content="#080d16">
 <title>Extended Coordination Test</title>
 
 <style>
-:root {
-  --bg:#080d16;
-  --panel:#111b2a;
-  --line:#34465f;
-  --text:#e7edf6;
-  --muted:#8495ac;
-  --magenta:#ed39df;
-  --green:#54df9b;
-  --red:#ff626f;
-  --cyan:#52d8ed;
+:root{
+ --bg:#080d16;--panel:#111b2a;--line:#34465f;
+ --text:#e7edf6;--muted:#8495ac;--magenta:#ed39df;
+ --green:#54df9b;--red:#ff626f;--cyan:#52d8ed;
 }
-* {
-  box-sizing:border-box;
-  -webkit-tap-highlight-color:transparent;
-}
-html,body {
-  margin:0;
-  min-height:100%;
-  background:var(--bg);
-  color:var(--text);
-  font-family:Arial,Helvetica,sans-serif;
-  overscroll-behavior:none;
-}
-body { padding:8px; }
-button { font:inherit;color:inherit; }
-.app { width:100%;max-width:760px;margin:auto; }
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;min-height:100%;background:var(--bg);color:var(--text);font-family:Arial,Helvetica,sans-serif;overscroll-behavior:none}
+body{padding:8px}
+button{font:inherit;color:inherit}
+.app{width:100%;max-width:760px;margin:auto}
+.topbar{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:9px}
+.brand{font-size:13px;font-weight:800;letter-spacing:1.4px}
+.status{font-size:10px;color:var(--muted);margin-top:3px}
+.timer{font-size:20px;font-weight:bold;font-variant-numeric:tabular-nums}
+.panel{background:linear-gradient(145deg,#142033,#0d1624);border:1px solid var(--line);border-radius:11px;padding:9px;margin-bottom:9px}
+.target-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.target{background:#091321;border:1px solid #293b53;border-radius:8px;padding:9px 3px;text-align:center}
+.target small{display:block;font-size:9px;color:var(--muted);margin-bottom:5px;letter-spacing:.7px}
+.target strong{font-size:16px;font-variant-numeric:tabular-nums}
+.target strong span{font-size:9px;color:var(--muted);font-weight:normal}
+.task-line{text-align:center;color:var(--magenta);font-size:10px;margin-top:8px;letter-spacing:.5px}
 
-.topbar {
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  gap:8px;
-  margin-bottom:9px;
-}
-.brand { font-size:13px;font-weight:800;letter-spacing:1.4px; }
-.status { font-size:10px;color:var(--muted);margin-top:3px; }
-.timer { font-size:20px;font-weight:bold;font-variant-numeric:tabular-nums; }
+.main-grid{display:grid;grid-template-columns:62px minmax(0,1fr) 62px;gap:6px;align-items:stretch}
+.side-panel{background:#101b2a;border:1px solid var(--line);border-radius:9px;padding:7px 3px;display:flex;flex-direction:column;align-items:center;justify-content:space-between;min-height:300px}
+.side-label{font-size:9px;color:var(--muted);text-align:center}
+.side-value{font-size:15px;font-weight:bold;font-variant-numeric:tabular-nums}
 
-.panel {
-  background:linear-gradient(145deg,#142033,#0d1624);
-  border:1px solid var(--line);
-  border-radius:11px;
-  padding:9px;
-  margin-bottom:9px;
-}
-.target-grid { display:grid;grid-template-columns:repeat(3,1fr);gap:6px; }
-.target {
-  background:#091321;
-  border:1px solid #293b53;
-  border-radius:8px;
-  padding:9px 3px;
-  text-align:center;
-}
-.target small {
-  display:block;
-  font-size:9px;
-  color:var(--muted);
-  margin-bottom:5px;
-  letter-spacing:.7px;
-}
-.target strong { font-size:16px;font-variant-numeric:tabular-nums; }
-.target strong span { font-size:9px;color:var(--muted);font-weight:normal; }
-.task-line {
-  text-align:center;
-  color:var(--magenta);
-  font-size:10px;
-  margin-top:8px;
-  letter-spacing:.5px;
-}
+/* A320-inspired speed and altitude tapes */
+.tape{position:relative;width:100%;height:116px;overflow:hidden;background:#050a10;border:1px solid #52657a;border-radius:2px}
+.tape-window{position:absolute;inset:0;overflow:hidden}
+.tape-tick{position:absolute;right:3px;width:11px;height:1px;background:#dce6f2}
+.tape-tick.major{width:19px;height:2px;background:#fff}
+.tape-number{position:absolute;right:25px;transform:translateY(-50%);font-size:10px;color:#fff;font-weight:bold;font-variant-numeric:tabular-nums}
+.tape-pointer{position:absolute;z-index:3;right:0;top:50%;transform:translateY(-50%);width:100%;height:23px;background:#18334b;border:1px solid var(--cyan);display:flex;align-items:center;justify-content:center;color:#fff;font-size:12px;font-weight:bold}
+.tape-pointer:before{content:"";position:absolute;left:0;top:0;border-top:10px solid transparent;border-bottom:10px solid transparent;border-left:8px solid var(--cyan)}
+.tape-target{position:absolute;z-index:4;left:0;width:100%;height:2px;background:var(--magenta);box-shadow:0 0 5px var(--magenta);pointer-events:none}
+.tape-target:before{content:"";position:absolute;left:0;top:-4px;border-top:5px solid transparent;border-bottom:5px solid transparent;border-left:7px solid var(--magenta)}
+.tape-caption{font-size:8px;color:var(--muted);text-align:center;margin-top:3px}
 
-.main-grid {
-  display:grid;
-  grid-template-columns:62px minmax(0,1fr) 62px;
-  gap:6px;
-  align-items:stretch;
-}
-.side-panel {
-  background:#101b2a;
-  border:1px solid var(--line);
-  border-radius:9px;
-  padding:7px 3px;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  justify-content:space-between;
-  min-height:300px;
-}
-.side-label { font-size:9px;color:var(--muted);text-align:center; }
-.side-value { font-size:15px;font-weight:bold;font-variant-numeric:tabular-nums; }
+/* Primary Flight Display */
+.pfd{min-width:0;background:#02060b;border:2px solid #64788c;border-radius:3px;overflow:hidden;aspect-ratio:1.05/1;display:flex;flex-direction:column}
+.pfd-screen{flex:1;position:relative;overflow:hidden;background:#101c2b}
+.horizon{position:absolute;inset:-100%;transform-origin:center center;overflow:hidden}
+.sky{position:absolute;top:0;left:0;width:100%;height:50%;background:linear-gradient(#0875a8,#276c91)}
+.ground{position:absolute;bottom:0;left:0;width:100%;height:50%;background:linear-gradient(#795a34,#483724)}
+.horizon-line{position:absolute;left:0;top:50%;width:100%;height:2px;background:#fff}
+.pitch-lines{position:absolute;inset:0}
+.pitch-line{position:absolute;left:50%;width:72px;height:1px;background:#ffffffd9;transform:translateX(-50%)}
+.pitch-line:before,.pitch-line:after{content:"";position:absolute;top:0;width:10px;height:1px;background:#fff}
+.pitch-line:before{left:-12px}.pitch-line:after{right:-12px}
+.pitch-label{position:absolute;top:-8px;color:#fff;font-size:10px;font-weight:bold;text-shadow:0 1px 3px #000;white-space:nowrap}
+.pitch-label.left{right:calc(50% + 48px)}.pitch-label.right{left:calc(50% + 48px)}
+.aircraft-symbol{position:absolute;z-index:5;left:50%;top:50%;width:88px;height:22px;transform:translate(-50%,-50%)}
+.aircraft-symbol:before{content:"";position:absolute;left:0;top:9px;width:88px;height:4px;background:#f4c94e;border-radius:3px}
+.aircraft-symbol:after{content:"";position:absolute;left:41px;top:0;width:6px;height:22px;background:#f4c94e;border-radius:3px}
+.bank-scale{position:absolute;z-index:7;top:7px;left:50%;transform:translateX(-50%);width:130px;text-align:center;color:#fff;font-size:10px;pointer-events:none}
+.bank-pointer{display:block;margin:3px auto 0;width:0;height:0;border-left:7px solid transparent;border-right:7px solid transparent;border-top:12px solid #f5d15a}
+.fd-command{position:absolute;z-index:6;left:50%;top:50%;width:0;height:0;pointer-events:none;will-change:transform}
+.fd-horizontal{position:absolute;width:92px;height:3px;background:var(--magenta);left:0;top:0;transform:translate(-50%,-50%);box-shadow:0 0 6px var(--magenta)}
+.fd-vertical{position:absolute;width:3px;height:58px;background:var(--magenta);left:0;top:0;transform:translate(-50%,-50%);box-shadow:0 0 6px var(--magenta)}
+.fd-dot{position:absolute;width:6px;height:6px;border-radius:50%;background:#fff;left:0;top:0;transform:translate(-50%,-50%)}
 
-.control-btn {
-  width:40px;
-  height:40px;
-  border:1px solid #425673;
-  background:#1a2a40;
-  border-radius:8px;
-  font-size:21px;
-  font-weight:bold;
-  touch-action:none;
-  user-select:none;
-}
-.control-btn:active,.control-btn.active {
-  background:#315174;
-  border-color:var(--cyan);
-}
-
-/* Moving speed and altitude tapes */
-.tape {
-  position:relative;
-  width:100%;
-  height:116px;
-  overflow:hidden;
-  background:#07111e;
-  border:1px solid #2b405a;
-  border-radius:5px;
-}
-.tape-window { position:absolute;inset:0;overflow:hidden; }
-.tape-tick {
-  position:absolute;
-  right:5px;
-  width:13px;
-  height:1px;
-  background:#a9bbce;
-}
-.tape-tick.major {
-  width:22px;
-  height:2px;
-  background:#e4edf8;
-}
-.tape-number {
-  position:absolute;
-  right:28px;
-  transform:translateY(-50%);
-  font-size:10px;
-  color:#dce6f2;
-  font-variant-numeric:tabular-nums;
-}
-.tape-pointer {
-  position:absolute;
-  z-index:3;
-  right:0;
-  top:50%;
-  transform:translateY(-50%);
-  width:100%;
-  height:24px;
-  background:#18334b;
-  border-top:1px solid var(--cyan);
-  border-bottom:1px solid var(--cyan);
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  color:white;
-  font-size:12px;
-  font-weight:bold;
-}
-.tape-pointer:before {
-  content:"";
-  position:absolute;
-  left:0;
-  top:0;
-  border-top:11px solid transparent;
-  border-bottom:11px solid transparent;
-  border-left:9px solid var(--cyan);
-}
-.tape-caption { font-size:8px;color:var(--muted);text-align:center;margin-top:3px; }
-
-/* Magenta target indicators */
-.tape-target {
-  position:absolute;
-  z-index:4;
-  left:0;
-  width:100%;
-  height:2px;
-  background:var(--magenta);
-  box-shadow:0 0 5px var(--magenta);
-  pointer-events:none;
-}
-.tape-target:before {
-  content:"";
-  position:absolute;
-  left:0;
-  top:-4px;
-  border-top:5px solid transparent;
-  border-bottom:5px solid transparent;
-  border-left:7px solid var(--magenta);
-}
-
-.pfd {
-  min-width:0;
-  background:#050a11;
-  border:2px solid #354962;
-  border-radius:9px;
-  overflow:hidden;
-  aspect-ratio:1.05/1;
-  display:flex;
-  flex-direction:column;
-}
-.pfd-screen {
-  flex:1;
-  position:relative;
-  overflow:hidden;
-  background:#101c2b;
-}
-.horizon {
-  position:absolute;
-  inset:-100%;
-  transform-origin:center center;
-  overflow:hidden;
-}
-.sky {
-  position:absolute;
-  top:0;left:0;
-  width:100%;height:50%;
-  background:linear-gradient(#0875a8,#276c91);
-}
-.ground {
-  position:absolute;
-  bottom:0;left:0;
-  width:100%;height:50%;
-  background:linear-gradient(#795a34,#483724);
-}
-.horizon-line {
-  position:absolute;
-  left:0;top:50%;
-  width:100%;height:2px;
-  background:white;
-}
-.pitch-lines { position:absolute;inset:0; }
-.pitch-line {
-  position:absolute;
-  left:50%;
-  width:72px;
-  height:1px;
-  background:#ffffffd9;
-  transform:translateX(-50%);
-}
-.pitch-line:before,.pitch-line:after {
-  content:"";
-  position:absolute;
-  top:0;
-  width:10px;
-  height:1px;
-  background:white;
-}
-.pitch-line:before { left:-12px; }
-.pitch-line:after { right:-12px; }
-.pitch-label {
-  position:absolute;
-  top:-8px;
-  color:white;
-  font-size:10px;
-  font-weight:bold;
-  text-shadow:0 1px 3px #000;
-  white-space:nowrap;
-}
-.pitch-label.left { right:calc(50% + 48px); }
-.pitch-label.right { left:calc(50% + 48px); }
-
-.aircraft-symbol {
-  position:absolute;
-  z-index:5;
-  left:50%;top:50%;
-  width:88px;height:22px;
-  transform:translate(-50%,-50%);
-}
-.aircraft-symbol:before {
-  content:"";
-  position:absolute;
-  left:0;top:9px;
-  width:88px;height:4px;
-  background:#f4c94e;
-  border-radius:3px;
-}
-.aircraft-symbol:after {
-  content:"";
-  position:absolute;
-  left:41px;top:0;
-  width:6px;height:22px;
-  background:#f4c94e;
-  border-radius:3px;
-}
-.bank-scale {
-  position:absolute;
-  z-index:7;
-  top:7px;left:50%;
-  transform:translateX(-50%);
-  width:130px;
-  text-align:center;
-  color:white;
-  font-size:10px;
-  pointer-events:none;
-}
-.bank-pointer {
-  display:block;
-  margin:3px auto 0;
-  width:0;height:0;
-  border-left:7px solid transparent;
-  border-right:7px solid transparent;
-  border-top:12px solid #f5d15a;
-}
-
-/* Flight Director */
-.fd-command {
-  position:absolute;
-  z-index:6;
-  left:50%;top:50%;
-  width:0;height:0;
-  pointer-events:none;
-  will-change:transform;
-}
-.fd-horizontal {
-  position:absolute;
-  width:92px;height:3px;
-  background:var(--magenta);
-  left:0;top:0;
-  transform:translate(-50%,-50%);
-  box-shadow:0 0 6px var(--magenta);
-}
-.fd-vertical {
-  position:absolute;
-  width:3px;height:58px;
-  background:var(--magenta);
-  left:0;top:0;
-  transform:translate(-50%,-50%);
-  box-shadow:0 0 6px var(--magenta);
-}
-.fd-dot {
-  position:absolute;
-  width:6px;height:6px;
-  border-radius:50%;
-  background:white;
-  left:0;top:0;
-  transform:translate(-50%,-50%);
-}
-
-.heading-tape {
-  height:42px;
-  position:relative;
-  overflow:hidden;
-  background:#080e18;
-  border-top:1px solid #33455d;
-  border-bottom:1px solid #33455d;
-}
-.heading-scale { position:absolute;inset:0;white-space:nowrap; }
-.heading-mark {
-  position:absolute;
-  top:4px;
-  transform:translateX(-50%);
-  font-size:10px;
-  color:#dce6f2;
-  text-align:center;
-}
-.heading-mark:before {
-  content:"";
-  display:block;
-  width:1px;height:7px;
-  background:#9eb1c7;
-  margin:0 auto 3px;
-}
-.heading-mark.major { font-size:11px;font-weight:bold;color:#f5d15a; }
-
-.heading-pointer {
-  position:absolute;
-  left:50%;top:0;bottom:0;
-  width:2px;
-  background:var(--cyan);
-  z-index:2;
-}
-.heading-pointer:after {
-  content:"";
-  position:absolute;
-  top:0;left:-5px;
-  border-left:6px solid transparent;
-  border-right:6px solid transparent;
-  border-top:8px solid var(--cyan);
-}
-.heading-target {
-  position:absolute;
-  z-index:4;
-  top:0;
-  height:15px;
-  width:3px;
-  background:var(--magenta);
-  box-shadow:0 0 5px var(--magenta);
-  transform:translateX(-50%);
-  pointer-events:none;
-}
-.heading-target:after {
-  content:"";
-  position:absolute;
-  bottom:-1px;
-  left:-4px;
-  border-left:5px solid transparent;
-  border-right:5px solid transparent;
-  border-bottom:6px solid var(--magenta);
-}
+/* Heading tape */
+.heading-tape{height:42px;position:relative;overflow:hidden;background:#050a10;border-top:1px solid #52657a;border-bottom:1px solid #52657a}
+.heading-scale{position:absolute;inset:0;white-space:nowrap}
+.heading-mark{position:absolute;top:4px;transform:translateX(-50%);font-size:10px;color:#fff;text-align:center;font-weight:bold}
+.heading-mark:before{content:"";display:block;width:1px;height:7px;background:#dce6f2;margin:0 auto 3px}
+.heading-mark.major{font-size:11px;color:#f5d15a}
+.heading-pointer{position:absolute;left:50%;top:0;bottom:0;width:2px;background:var(--cyan);z-index:2}
+.heading-pointer:after{content:"";position:absolute;top:0;left:-5px;border-left:6px solid transparent;border-right:6px solid transparent;border-top:8px solid var(--cyan)}
+.heading-target{position:absolute;z-index:4;top:0;height:15px;width:3px;background:var(--magenta);box-shadow:0 0 5px var(--magenta);transform:translateX(-50%);pointer-events:none}
+.heading-target:after{content:"";position:absolute;bottom:-1px;left:-4px;border-left:5px solid transparent;border-right:5px solid transparent;border-bottom:6px solid var(--magenta)}
 
 /* Slip indicator */
-.slip-panel {
-  margin-top:8px;
-  background:#0c1522;
-  border:1px solid #30435b;
-  border-radius:8px;
-  padding:8px;
-}
-.slip-title {
-  text-align:center;
-  color:var(--muted);
-  font-size:9px;
-  letter-spacing:1px;
-  margin-bottom:7px;
-}
-.slip-track {
-  position:relative;
-  height:34px;
-  width:100%;
-  max-width:260px;
-  margin:auto;
-  background:#1b2b40;
-  border-radius:5px;
-  border:1px solid #435873;
-  overflow:hidden;
-}
-.slip-guide {
-  position:absolute;
-  top:0;height:100%;width:2px;
-  background:#e4eaf3;
-  z-index:2;
-}
-.slip-guide.left { left:35%; }
-.slip-guide.right { right:35%; }
-.slip-ball {
-  position:absolute;
-  top:50%;left:50%;
-  width:14px;height:14px;
-  border-radius:50%;
-  background:#d64bea;
-  box-shadow:0 0 8px #d64bea;
-  transform:translate(-50%,-50%);
-  z-index:3;
-}
-.rudder-row { display:flex;justify-content:center;gap:12px;margin-top:8px; }
-.rudder-btn {
-  min-width:95px;
-  padding:9px;
-  border-radius:7px;
-  border:1px solid #465c78;
-  background:#1a2b41;
-  font-size:12px;
-  touch-action:none;
-}
-.rudder-btn:active,.rudder-btn.active { background:#365678;border-color:var(--cyan); }
+.slip-panel{margin-top:8px;background:#0c1522;border:1px solid #30435b;border-radius:8px;padding:8px}
+.slip-title{text-align:center;color:var(--muted);font-size:9px;letter-spacing:1px;margin-bottom:7px}
+.slip-track{position:relative;height:34px;width:100%;max-width:260px;margin:auto;background:#1b2b40;border-radius:5px;border:1px solid #435873;overflow:hidden}
+.slip-guide{position:absolute;top:0;height:100%;width:2px;background:#e4eaf3;z-index:2}
+.slip-guide.left{left:35%}.slip-guide.right{right:35%}
+.slip-ball{position:absolute;top:50%;left:50%;width:14px;height:14px;border-radius:50%;background:#d64bea;box-shadow:0 0 8px #d64bea;transform:translate(-50%,-50%);z-index:3}
+.rudder-row{display:flex;justify-content:center;gap:12px;margin-top:8px}
+.rudder-btn{min-width:95px;padding:9px;border-radius:7px;border:1px solid #465c78;background:#1a2b41;font-size:12px;touch-action:none}
+.rudder-btn:active,.rudder-btn.active{background:#365678;border-color:var(--cyan)}
 
-.control-area { display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:9px; }
-.control-card {
-  border:1px solid var(--line);
-  background:#101a28;
-  border-radius:9px;
-  padding:8px;
-  min-width:0;
-}
-.control-heading {
-  text-align:center;
-  font-size:10px;
-  color:var(--muted);
-  letter-spacing:1px;
-  margin-bottom:8px;
-}
-.joystick-zone {
-  height:140px;
-  background:radial-gradient(circle,#1d3049,#0a1320 72%);
-  border:1px solid #334b68;
-  border-radius:9px;
-  position:relative;
-  overflow:hidden;
-  touch-action:none;
-}
-.joy-cross-h,.joy-cross-v { position:absolute;background:#344a64; }
-.joy-cross-h { height:1px;width:100%;top:50%; }
-.joy-cross-v { width:1px;height:100%;left:50%; }
-.joy-ring {
-  position:absolute;
-  width:94px;height:94px;
-  border:1px dashed #536b88;
-  border-radius:50%;
-  left:50%;top:50%;
-  transform:translate(-50%,-50%);
-}
-.joy-knob {
-  position:absolute;
-  width:43px;height:43px;
-  border-radius:50%;
-  left:50%;top:50%;
-  transform:translate(-50%,-50%);
-  background:linear-gradient(145deg,#d9e4f1,#687e98);
-  border:3px solid #243a55;
-  box-shadow:0 3px 10px #0009;
-  pointer-events:none;
-}
-.joy-labels { display:flex;justify-content:space-between;font-size:9px;color:var(--muted);margin-top:6px; }
-.instructions { color:var(--muted);font-size:10px;line-height:1.5;margin-top:7px;text-align:center; }
-.score-row { display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid #293a50;font-size:11px;gap:5px; }
-.score-row strong { font-variant-numeric:tabular-nums; }
+/* Vertical throttle */
+.throttle-panel{margin-top:9px;background:#101a28;border:1px solid var(--line);border-radius:9px;padding:12px}
+.throttle-head{display:flex;justify-content:space-between;align-items:center;font-size:10px;color:var(--muted);letter-spacing:1px;margin-bottom:10px}
+.throttle-head strong{color:var(--cyan);font-size:12px;font-variant-numeric:tabular-nums}
+.throttle-control{display:flex;justify-content:center;align-items:center;gap:18px;height:190px}
+.throttle-scale{height:170px;width:34px;position:relative;display:flex;flex-direction:column;justify-content:space-between;align-items:center;color:var(--muted);font-size:9px}
+.throttle-track{position:relative;height:170px;width:46px;border-radius:8px;background:linear-gradient(90deg,#080f19,#263c54,#080f19);border:1px solid #52677f;box-shadow:inset 0 0 8px #000}
+.throttle-range{position:absolute;inset:0;width:100%;height:100%;margin:0;appearance:none;-webkit-appearance:none;writing-mode:vertical-lr;direction:rtl;background:transparent;cursor:pointer;touch-action:none}
+.throttle-range::-webkit-slider-thumb{appearance:none;-webkit-appearance:none;width:40px;height:19px;border-radius:5px;background:linear-gradient(180deg,#e4edf5,#8396aa);border:2px solid #40546d;box-shadow:0 2px 6px #000b}
+.throttle-range::-moz-range-thumb{width:36px;height:15px;border-radius:5px;background:#cbd7e4;border:2px solid #40546d}
+.throttle-center{position:absolute;left:0;right:0;top:50%;height:1px;background:#71869d;pointer-events:none}
+.throttle-note{text-align:center;color:var(--muted);font-size:9px;margin-top:5px}
 
-.action-row { display:flex;gap:8px;margin-top:9px; }
-.primary,.secondary {
-  flex:1;
-  border:0;
-  border-radius:8px;
-  padding:13px 8px;
-  font-weight:bold;
-  font-size:13px;
-}
-.primary { background:#176eaa; }
-.secondary { background:#26374d; }
+/* Controls */
+.control-area{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:9px}
+.control-card{border:1px solid var(--line);background:#101a28;border-radius:9px;padding:8px;min-width:0}
+.control-heading{text-align:center;font-size:10px;color:var(--muted);letter-spacing:1px;margin-bottom:8px}
+.joystick-zone{height:140px;background:radial-gradient(circle,#1d3049,#0a1320 72%);border:1px solid #334b68;border-radius:9px;position:relative;overflow:hidden;touch-action:none}
+.joy-cross-h,.joy-cross-v{position:absolute;background:#344a64}
+.joy-cross-h{height:1px;width:100%;top:50%}.joy-cross-v{width:1px;height:100%;left:50%}
+.joy-ring{position:absolute;width:94px;height:94px;border:1px dashed #536b88;border-radius:50%;left:50%;top:50%;transform:translate(-50%,-50%)}
+.joy-knob{position:absolute;width:43px;height:43px;border-radius:50%;left:50%;top:50%;transform:translate(-50%,-50%);background:linear-gradient(145deg,#d9e4f1,#687e98);border:3px solid #243a55;box-shadow:0 3px 10px #0009;pointer-events:none}
+.joy-labels{display:flex;justify-content:space-between;font-size:9px;color:var(--muted);margin-top:6px}
+.instructions{color:var(--muted);font-size:10px;line-height:1.5;margin-top:7px;text-align:center}
+.score-row{display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid #293a50;font-size:11px;gap:5px}
+.score-row strong{font-variant-numeric:tabular-nums}
+.action-row{display:flex;gap:8px;margin-top:9px}
+.primary,.secondary{flex:1;border:0;border-radius:8px;padding:13px 8px;font-weight:bold;font-size:13px}
+.primary{background:#176eaa}.secondary{background:#26374d}
+.results{display:none;background:#111e2d;border:1px solid var(--line);border-radius:12px;padding:14px;margin-top:10px}
+.results h2{margin:0 0 10px;font-size:18px}
+.final-score{text-align:center;font-size:34px;font-weight:bold;margin:13px 0 5px;color:var(--green)}
+.result-note{text-align:center;color:var(--muted);font-size:11px}
+.overlay{position:fixed;inset:0;z-index:20;display:flex;align-items:center;justify-content:center;background:#050a12ed;padding:20px}
+.overlay-card{width:100%;max-width:420px;background:#142135;border:1px solid #405875;border-radius:15px;padding:22px;text-align:center}
+.overlay-card h1{font-size:22px;margin:0 0 10px}
+.overlay-card p{color:#b2c0d2;font-size:13px;line-height:1.6}
+.overlay-card button{width:100%;margin-top:12px;padding:14px;background:#1676b7;border:0;border-radius:8px;font-weight:bold}
+.hidden{display:none!important}
 
-.results {
-  display:none;
-  background:#111e2d;
-  border:1px solid var(--line);
-  border-radius:12px;
-  padding:14px;
-  margin-top:10px;
+@media(max-width:370px){
+ body{padding:5px}.main-grid{grid-template-columns:55px minmax(0,1fr) 55px;gap:4px}
+ .side-panel{min-height:270px}.pfd{aspect-ratio:.98/1}
+ .joystick-zone{height:125px}.target strong{font-size:14px}
 }
-.results h2 { margin:0 0 10px;font-size:18px; }
-.final-score { text-align:center;font-size:34px;font-weight:bold;margin:13px 0 5px;color:var(--green); }
-.result-note { text-align:center;color:var(--muted);font-size:11px; }
-
-.overlay {
-  position:fixed;
-  inset:0;
-  z-index:20;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  background:#050a12ed;
-  padding:20px;
-}
-.overlay-card {
-  width:100%;
-  max-width:420px;
-  background:#142135;
-  border:1px solid #405875;
-  border-radius:15px;
-  padding:22px;
-  text-align:center;
-}
-.overlay-card h1 { font-size:22px;margin:0 0 10px; }
-.overlay-card p { color:#b2c0d2;font-size:13px;line-height:1.6; }
-.overlay-card button {
-  width:100%;
-  margin-top:12px;
-  padding:14px;
-  background:#1676b7;
-  border:0;
-  border-radius:8px;
-  font-weight:bold;
-}
-.hidden { display:none!important; }
-
-@media(max-width:370px) {
-  body { padding:5px; }
-  .main-grid { grid-template-columns:55px minmax(0,1fr) 55px;gap:4px; }
-  .side-panel { min-height:270px; }
-  .control-btn { width:36px;height:37px; }
-  .pfd { aspect-ratio:.98/1; }
-  .joystick-zone { height:125px; }
-  .target strong { font-size:14px; }
-}
-@media(min-width:600px) {
-  .main-grid { grid-template-columns:78px minmax(0,1fr) 78px; }
-  .side-panel { min-height:350px; }
-  .pfd { aspect-ratio:1.25/1; }
-  .joystick-zone { height:170px; }
+@media(min-width:600px){
+ .main-grid{grid-template-columns:78px minmax(0,1fr) 78px}
+ .side-panel{min-height:350px}.pfd{aspect-ratio:1.25/1}
+ .joystick-zone{height:170px}
 }
 </style>
 </head>
@@ -588,203 +148,162 @@ button { font:inherit;color:inherit; }
 <body>
 <div class="app">
 
-  <div class="topbar">
-    <div>
-      <div class="brand">EXTENDED COORDINATION</div>
-      <div class="status" id="status">READY · TRAINING MODE</div>
-    </div>
-    <div class="timer" id="timer">02:00</div>
+ <div class="topbar">
+  <div>
+   <div class="brand">EXTENDED COORDINATION</div>
+   <div class="status" id="status">READY · TRAINING MODE</div>
+  </div>
+  <div class="timer" id="timer">02:00</div>
+ </div>
+
+ <div class="panel">
+  <div class="target-grid">
+   <div class="target"><small>TARGET IAS</small><strong>170 <span>KT</span></strong></div>
+   <div class="target"><small>TARGET ALTITUDE</small><strong id="targetAltitude">12,000 <span>FT</span></strong></div>
+   <div class="target"><small>TARGET HEADING</small><strong id="targetHeading">000°</strong></div>
+  </div>
+  <div class="task-line" id="taskLine">TASK 01 · HDG 000° · ALT 12,000 FT</div>
+ </div>
+
+ <div class="main-grid">
+
+  <div class="side-panel">
+   <div class="side-label">IAS</div>
+   <div class="tape">
+    <div class="tape-window" id="speedTape"></div>
+    <div class="tape-pointer" id="speedPointer">170</div>
+   </div>
+   <div class="tape-caption">KNOTS</div>
+   <div class="side-label">THRUST</div>
+   <div class="side-value" id="throttleSide">50%</div>
   </div>
 
-  <div class="panel">
-    <div class="target-grid">
-      <div class="target">
-        <small>TARGET IAS</small>
-        <strong>170 <span>KT</span></strong>
+  <div>
+   <div class="pfd">
+    <div class="pfd-screen">
+     <div class="horizon" id="horizon">
+      <div class="sky"></div>
+      <div class="ground"></div>
+      <div class="horizon-line"></div>
+      <div class="pitch-lines">
+       <div class="pitch-line" style="top:25%"><span class="pitch-label left">+20°</span><span class="pitch-label right">+20°</span></div>
+       <div class="pitch-line" style="top:37.5%"><span class="pitch-label left">+10°</span><span class="pitch-label right">+10°</span></div>
+       <div class="pitch-line" style="top:62.5%"><span class="pitch-label left">−10°</span><span class="pitch-label right">−10°</span></div>
+       <div class="pitch-line" style="top:75%"><span class="pitch-label left">−20°</span><span class="pitch-label right">−20°</span></div>
       </div>
-      <div class="target">
-        <small>TARGET ALTITUDE</small>
-        <strong id="targetAltitude">12,000 <span>FT</span></strong>
-      </div>
-      <div class="target">
-        <small>TARGET HEADING</small>
-        <strong id="targetHeading">000°</strong>
-      </div>
+     </div>
+     <div class="bank-scale">BANK<div class="bank-pointer" id="bankPointer"></div></div>
+     <div class="aircraft-symbol"></div>
+     <div class="fd-command" id="fdCommand">
+      <div class="fd-horizontal"></div>
+      <div class="fd-vertical"></div>
+      <div class="fd-dot"></div>
+     </div>
     </div>
-    <div class="task-line" id="taskLine">TASK 01 · HDG 000° · ALT 12,000 FT</div>
+    <div class="heading-tape">
+     <div class="heading-scale" id="headingScale"></div>
+     <div class="heading-pointer"></div>
+    </div>
+   </div>
+
+   <div class="slip-panel">
+    <div class="slip-title">YAW / SLIP INDICATOR</div>
+    <div class="slip-track">
+     <div class="slip-guide left"></div>
+     <div class="slip-guide right"></div>
+     <div class="slip-ball" id="slipBall"></div>
+    </div>
+    <div class="rudder-row">
+     <button class="rudder-btn" id="rudderLeft">◀ LEFT</button>
+     <button class="rudder-btn" id="rudderRight">RIGHT ▶</button>
+    </div>
+   </div>
   </div>
 
-  <div class="main-grid">
-
-    <div class="side-panel">
-      <div class="side-label">IAS</div>
-      <div class="tape">
-        <div class="tape-window" id="speedTape"></div>
-        <div class="tape-pointer" id="speedPointer">170</div>
-      </div>
-      <div class="tape-caption">KNOTS</div>
-      <button class="control-btn" id="speedUp">+</button>
-      <button class="control-btn" id="speedDown">−</button>
-      <div class="side-label">SPEED</div>
-    </div>
-
-    <div>
-      <div class="pfd">
-        <div class="pfd-screen">
-
-          <div class="horizon" id="horizon">
-            <div class="sky"></div>
-            <div class="ground"></div>
-            <div class="horizon-line"></div>
-
-            <div class="pitch-lines">
-              <div class="pitch-line" style="top:25%">
-                <span class="pitch-label left">+20°</span>
-                <span class="pitch-label right">+20°</span>
-              </div>
-              <div class="pitch-line" style="top:37.5%">
-                <span class="pitch-label left">+10°</span>
-                <span class="pitch-label right">+10°</span>
-              </div>
-              <div class="pitch-line" style="top:62.5%">
-                <span class="pitch-label left">−10°</span>
-                <span class="pitch-label right">−10°</span>
-              </div>
-              <div class="pitch-line" style="top:75%">
-                <span class="pitch-label left">−20°</span>
-                <span class="pitch-label right">−20°</span>
-              </div>
-            </div>
-          </div>
-
-          <div class="bank-scale">
-            BANK
-            <div class="bank-pointer" id="bankPointer"></div>
-          </div>
-
-          <div class="aircraft-symbol"></div>
-
-          <div class="fd-command" id="fdCommand">
-            <div class="fd-horizontal"></div>
-            <div class="fd-vertical"></div>
-            <div class="fd-dot"></div>
-          </div>
-
-        </div>
-
-        <div class="heading-tape">
-          <div class="heading-scale" id="headingScale"></div>
-          <div class="heading-pointer"></div>
-        </div>
-      </div>
-
-      <div class="slip-panel">
-        <div class="slip-title">YAW / SLIP INDICATOR</div>
-        <div class="slip-track">
-          <div class="slip-guide left"></div>
-          <div class="slip-guide right"></div>
-          <div class="slip-ball" id="slipBall"></div>
-        </div>
-        <div class="rudder-row">
-          <button class="rudder-btn" id="rudderLeft">◀ LEFT</button>
-          <button class="rudder-btn" id="rudderRight">RIGHT ▶</button>
-        </div>
-      </div>
-    </div>
-
-    <div class="side-panel">
-      <div class="side-label">ALTITUDE</div>
-      <div class="tape">
-        <div class="tape-window" id="altTape"></div>
-        <div class="tape-pointer" id="altPointer">12000</div>
-      </div>
-      <div class="tape-caption">FEET</div>
-      <div class="side-label">PITCH</div>
-      <div class="side-value" id="pitchValue">0°</div>
-      <div class="side-label">BANK</div>
-      <div class="side-value" id="bankSide">0°</div>
-    </div>
-
+  <div class="side-panel">
+   <div class="side-label">ALTITUDE</div>
+   <div class="tape">
+    <div class="tape-window" id="altTape"></div>
+    <div class="tape-pointer" id="altPointer">12000</div>
+   </div>
+   <div class="tape-caption">FEET</div>
+   <div class="side-label">PITCH</div>
+   <div class="side-value" id="pitchValue">0°</div>
+   <div class="side-label">BANK</div>
+   <div class="side-value" id="bankSide">0°</div>
   </div>
 
-  <div class="control-area">
+ </div>
 
-    <div class="control-card">
-      <div class="control-heading">FLIGHT CONTROLS</div>
-      <div class="joystick-zone" id="joystick">
-        <div class="joy-cross-h"></div>
-        <div class="joy-cross-v"></div>
-        <div class="joy-ring"></div>
-        <div class="joy-knob" id="joyKnob"></div>
-      </div>
-      <div class="joy-labels">
-        <span>LEFT BANK</span>
-        <span>RIGHT BANK</span>
-      </div>
-      <div class="instructions">
-        UP: NOSE DOWN<br>
-        DOWN: NOSE UP<br>
-        LEFT / RIGHT: BANK
-      </div>
-    </div>
+ <!-- Vertical throttle -->
+ <div class="throttle-panel">
+  <div class="throttle-head">
+   <span>THROTTLE LEVER</span>
+   <strong id="throttleValue">50%</strong>
+  </div>
+  <div class="throttle-control">
+   <div class="throttle-scale">
+    <span>MAX</span>
+    <span>50%</span>
+    <span>IDLE</span>
+   </div>
+   <div class="throttle-track">
+    <div class="throttle-center"></div>
+    <input class="throttle-range" id="throttle" type="range" min="0" max="100" value="50" step="1" aria-label="Vertical throttle">
+   </div>
+  </div>
+  <div class="throttle-note">UP: INCREASE THRUST · DOWN: DECREASE THRUST</div>
+ </div>
 
-    <div class="control-card">
-      <div class="control-heading">FLIGHT PARAMETERS</div>
-      <div class="instructions">
-        Follow the magenta Flight Director to reach the current task targets.
-      </div>
-      <div class="score-row">
-        <span>IAS deviation</span><strong id="iasError">0 kt</strong>
-      </div>
-      <div class="score-row">
-        <span>Altitude deviation</span><strong id="altError">0 ft</strong>
-      </div>
-      <div class="score-row">
-        <span>Heading deviation</span><strong id="hdgError">0°</strong>
-      </div>
-      <div class="score-row">
-        <span>Slip deviation</span><strong id="slipError">0%</strong>
-      </div>
-      <div class="instructions" id="nextTask">Next task: --</div>
-    </div>
-
+ <div class="control-area">
+  <div class="control-card">
+   <div class="control-heading">FLIGHT CONTROLS</div>
+   <div class="joystick-zone" id="joystick">
+    <div class="joy-cross-h"></div>
+    <div class="joy-cross-v"></div>
+    <div class="joy-ring"></div>
+    <div class="joy-knob" id="joyKnob"></div>
+   </div>
+   <div class="joy-labels"><span>LEFT BANK</span><span>RIGHT BANK</span></div>
+   <div class="instructions">UP: NOSE DOWN<br>DOWN: NOSE UP<br>LEFT / RIGHT: BANK</div>
   </div>
 
-  <div class="action-row">
-    <button class="primary" id="startBtn">START TEST</button>
-    <button class="secondary" id="resetBtn">RESET</button>
+  <div class="control-card">
+   <div class="control-heading">FLIGHT PARAMETERS</div>
+   <div class="instructions">Follow the magenta Flight Director to reach the current task targets.</div>
+   <div class="score-row"><span>IAS deviation</span><strong id="iasError">0 kt</strong></div>
+   <div class="score-row"><span>Altitude deviation</span><strong id="altError">0 ft</strong></div>
+   <div class="score-row"><span>Heading deviation</span><strong id="hdgError">0°</strong></div>
+   <div class="score-row"><span>Slip deviation</span><strong id="slipError">0%</strong></div>
+   <div class="instructions" id="nextTask">Next task: --</div>
   </div>
+ </div>
 
-  <div class="results" id="results">
-    <h2>TEST RESULTS</h2>
-    <div class="score-row"><span>Airspeed control</span><strong id="scoreSpeed">0%</strong></div>
-    <div class="score-row"><span>Altitude control</span><strong id="scoreAlt">0%</strong></div>
-    <div class="score-row"><span>Heading control</span><strong id="scoreHeading">0%</strong></div>
-    <div class="score-row"><span>Yaw / slip coordination</span><strong id="scoreSlip">0%</strong></div>
-    <div class="final-score" id="finalScore">0%</div>
-    <div class="result-note">Training score · Not an official SkyTest score</div>
-  </div>
+ <div class="action-row">
+  <button class="primary" id="startBtn">START TEST</button>
+  <button class="secondary" id="resetBtn">RESET</button>
+ </div>
+
+ <div class="results" id="results">
+  <h2>TEST RESULTS</h2>
+  <div class="score-row"><span>Airspeed control</span><strong id="scoreSpeed">0%</strong></div>
+  <div class="score-row"><span>Altitude control</span><strong id="scoreAlt">0%</strong></div>
+  <div class="score-row"><span>Heading control</span><strong id="scoreHeading">0%</strong></div>
+  <div class="score-row"><span>Yaw / slip coordination</span><strong id="scoreSlip">0%</strong></div>
+  <div class="final-score" id="finalScore">0%</div>
+  <div class="result-note">Training score · Not an official SkyTest score</div>
+ </div>
 
 </div>
 
 <div class="overlay" id="intro">
-  <div class="overlay-card">
-    <h1>Extended Coordination Test</h1>
-    <p>
-      Maintain target airspeed and follow the changing heading and altitude tasks.
-      Use the joystick for attitude and rudder buttons to center the slip ball.
-    </p>
-    <p>
-      <b>Duration:</b> 2 minutes<br>
-      <b>Target IAS:</b> 170 kt<br>
-      <b>New task:</b> every 15–20 seconds
-    </p>
-    <p>
-      Nose down increases speed. Nose up decreases speed.
-      The moving tapes show current IAS, altitude and heading.
-    </p>
-    <button id="introStart">BEGIN</button>
-  </div>
+ <div class="overlay-card">
+  <h1>Extended Coordination Test</h1>
+  <p>Maintain target airspeed and follow the changing heading and altitude tasks. Use the joystick for attitude and rudder buttons to control the slip ball.</p>
+  <p><b>Duration:</b> 2 minutes<br><b>Target IAS:</b> 170 kt<br><b>New task:</b> every 15–20 seconds</p>
+  <p>Use the vertical throttle lever to control airspeed. Nose down increases speed; nose up decreases speed.</p>
+  <button id="introStart">BEGIN</button>
+ </div>
 </div>
 
 <script>
@@ -796,39 +315,17 @@ const angleDiff=(a,b)=>((a-b+540)%360)-180;
 const rand=(a,b)=>a+Math.random()*(b-a);
 
 const S={
- speed:170,
- altitude:12000,
- heading:0,
- pitch:0,
- bank:0,
- slip:0,
- slipTarget:0,
- slipComplete:false,
- joyX:0,
- joyY:0,
- rudder:0,
- targetAltitude:12000,
- targetHeading:0,
- running:false,
- remaining:120,
- elapsed:0,
- lastTime:0,
- sampleClock:0,
- taskClock:0,
- nextTaskAt:17,
- slipClock:0,
- nextSlipAt:12,
- taskNumber:1,
- samples:[]
+ speed:170,altitude:12000,heading:0,pitch:0,bank:0,
+ slip:0,slipTarget:0,slipComplete:false,
+ joyX:0,joyY:0,rudder:0,throttle:50,
+ targetAltitude:12000,targetHeading:0,
+ running:false,remaining:120,elapsed:0,lastTime:0,
+ sampleClock:0,taskClock:0,nextTaskAt:17,
+ slipClock:0,nextSlipAt:12,taskNumber:1,samples:[]
 };
 
-let raf=null;
-let joyPointer=null;
-let speedRepeatUp=null;
-let speedRepeatDown=null;
-
-const joystick=$('joystick');
-const knob=$('joyKnob');
+let raf=null,joyPointer=null;
+const joystick=$('joystick'),knob=$('joyKnob');
 
 /* JOYSTICK */
 function setJoy(x,y){
@@ -843,7 +340,7 @@ function moveJoy(e){
  let x=(e.clientX-r.left-r.width/2)/(r.width*.39);
  let y=(e.clientY-r.top-r.height/2)/(r.height*.39);
  const m=Math.hypot(x,y);
- if(m>1){x/=m;y/=m;}
+ if(m>1){x/=m;y/=m}
  setJoy(x,y);
 }
 
@@ -854,17 +351,14 @@ joystick.addEventListener('pointerdown',e=>{
  joystick.setPointerCapture(e.pointerId);
  moveJoy(e);
 });
-
 joystick.addEventListener('pointermove',e=>{
  if(e.pointerId===joyPointer)moveJoy(e);
 });
-
 function releaseJoy(e){
  if(e.pointerId!==joyPointer)return;
  joyPointer=null;
  setJoy(0,0);
 }
-
 joystick.addEventListener('pointerup',releaseJoy);
 joystick.addEventListener('pointercancel',releaseJoy);
 joystick.addEventListener('lostpointercapture',()=>{
@@ -872,49 +366,22 @@ joystick.addEventListener('lostpointercapture',()=>{
  setJoy(0,0);
 });
 
-/* IAS BUTTONS */
-function stopSpeedButtons(){
- if(speedRepeatUp){clearInterval(speedRepeatUp);speedRepeatUp=null;}
- if(speedRepeatDown){clearInterval(speedRepeatDown);speedRepeatDown=null;}
- $('speedUp').classList.remove('active');
- $('speedDown').classList.remove('active');
+/* VERTICAL THROTTLE */
+$('throttle').addEventListener('input',e=>{
+ S.throttle=Number(e.target.value);
+ updateThrottleDisplay();
+});
+
+function updateThrottleDisplay(){
+ const value=Math.round(S.throttle);
+ $('throttle').value=value;
+ $('throttleValue').textContent=value+'%';
+ $('throttleSide').textContent=value+'%';
 }
 
-function bindSpeedButton(id,direction){
- const el=$(id);
- let repeat=null;
-
- const stop=()=>{
-  if(repeat){clearInterval(repeat);repeat=null;}
-  el.classList.remove('active');
- };
-
- el.addEventListener('pointerdown',e=>{
-  if(!S.running)return;
-  e.preventDefault();
-  el.setPointerCapture(e.pointerId);
-  el.classList.add('active');
-
-  S.speed=clamp(S.speed+direction*2,80,260);
-
-  repeat=setInterval(()=>{
-   if(S.running)S.speed=clamp(S.speed+direction,80,260);
-  },160);
- });
-
- el.addEventListener('pointerup',stop);
- el.addEventListener('pointercancel',stop);
- el.addEventListener('lostpointercapture',stop);
- el.addEventListener('click',e=>e.preventDefault());
-}
-
-bindSpeedButton('speedUp',1);
-bindSpeedButton('speedDown',-1);
-
-/* RUDDER BUTTONS */
+/* RUDDER */
 function bindHold(id,callback){
  const el=$(id);
-
  el.addEventListener('pointerdown',e=>{
   if(!S.running)return;
   e.preventDefault();
@@ -922,12 +389,10 @@ function bindHold(id,callback){
   el.classList.add('active');
   callback(true);
  });
-
  const stop=()=>{
   el.classList.remove('active');
   callback(false);
  };
-
  el.addEventListener('pointerup',stop);
  el.addEventListener('pointercancel',stop);
  el.addEventListener('lostpointercapture',stop);
@@ -937,7 +402,6 @@ bindHold('rudderLeft',v=>{
  if(v)S.rudder=-1;
  else if(S.rudder===-1)S.rudder=0;
 });
-
 bindHold('rudderRight',v=>{
  if(v)S.rudder=1;
  else if(S.rudder===1)S.rudder=0;
@@ -945,19 +409,18 @@ bindHold('rudderRight',v=>{
 
 /* KEYBOARD */
 const keys={};
-
 window.addEventListener('keydown',e=>{
  keys[e.key.toLowerCase()]=true;
  if(e.key.startsWith('Arrow'))e.preventDefault();
 });
-
 window.addEventListener('keyup',e=>{
  keys[e.key.toLowerCase()]=false;
 });
 
 function keyboard(){
- if(keys.q)S.speed=clamp(S.speed+.12,80,260);
- if(keys.a)S.speed=clamp(S.speed-.12,80,260);
+ if(keys.arrowup)S.throttle=clamp(S.throttle+.8,0,100);
+ if(keys.arrowdown)S.throttle=clamp(S.throttle-.8,0,100);
+ updateThrottleDisplay();
 
  if(keys.z)S.rudder=-1;
  else if(keys.x)S.rudder=1;
@@ -969,7 +432,7 @@ function keyboard(){
  }
 }
 
-/* MOVING TAPES */
+/* TAPES */
 function renderVerticalTape(containerId,value,step,majorEvery,format,target){
  const el=$(containerId);
  const height=el.clientHeight;
@@ -981,20 +444,14 @@ function renderVerticalTape(containerId,value,step,majorEvery,format,target){
   const v=Math.round(value/step)*step+i*step;
   const y=center-(v-value)*pixelsPerUnit;
   const major=(Math.round(v/step)%majorEvery===0);
-
   html+=`<div class="tape-tick ${major?'major':''}" style="top:${y}px"></div>`;
-
-  if(major){
-   html+=`<div class="tape-number" style="top:${y}px">${format(v)}</div>`;
-  }
+  if(major)html+=`<div class="tape-number" style="top:${y}px">${format(v)}</div>`;
  }
 
  const targetY=center-(target-value)*pixelsPerUnit;
-
- if(targetY>=0 && targetY<=height){
+ if(targetY>=0&&targetY<=height){
   html+=`<div class="tape-target" style="top:${targetY}px"></div>`;
  }
-
  el.innerHTML=html;
 }
 
@@ -1010,59 +467,49 @@ function renderHeadingTape(){
   const deg=wrap360(raw);
   const x=center+(raw-S.heading)*px;
   const major=deg%30===0;
-
   html+=`<div class="heading-mark ${major?'major':''}" style="left:${x}px">${String(deg).padStart(3,'0')}</div>`;
  }
 
  const targetX=center+angleDiff(S.targetHeading,S.heading)*px;
-
- if(targetX>=0 && targetX<=width){
+ if(targetX>=0&&targetX<=width){
   html+=`<div class="heading-target" style="left:${targetX}px"></div>`;
  }
-
  el.innerHTML=html;
 }
 
-/* TASK GENERATION */
+/* TASKS */
 function renderTargets(){
  $('targetAltitude').innerHTML=
   `${Math.round(S.targetAltitude).toLocaleString('en-US')} <span>FT</span>`;
-
  $('targetHeading').textContent=
   String(Math.round(S.targetHeading)).padStart(3,'0')+'°';
-
  $('taskLine').textContent=
   `TASK ${String(S.taskNumber).padStart(2,'0')} · HDG ${String(Math.round(S.targetHeading)).padStart(3,'0')}° · ALT ${Math.round(S.targetAltitude).toLocaleString('en-US')} FT`;
 }
 
 function newTask(initial=false){
  if(!initial)S.taskNumber++;
-
  let offset;
- do{
-  offset=rand(-50,50);
- }while(Math.abs(offset)<12);
-
+ do{offset=rand(-50,50)}while(Math.abs(offset)<12);
  S.targetHeading=wrap360(S.heading+offset);
 
  const altOffset=(Math.random()<.5?-1:1)*rand(500,1500);
-
  S.targetAltitude=clamp(
   Math.round((S.altitude+altOffset)/100)*100,
   8000,16000
  );
-
  S.taskClock=0;
  S.nextTaskAt=rand(15,20);
  renderTargets();
 }
 
-/* RANDOM SLIP TASK */
+/* SLIP TASK */
 function newSlipEvent(){
  const direction=Math.random()<.5?-1:1;
 
- S.slipTarget=direction*rand(145,195);
- S.slip=S.slipTarget;
+ // Small initial deviation.
+ S.slip=direction*rand(55,68);
+ S.slipTarget=0;
  S.slipComplete=false;
 
  S.slipClock=0;
@@ -1073,20 +520,19 @@ function newSlipEvent(){
 function physics(dt){
  keyboard();
 
- // Pitch affects airspeed.
+ // Throttle controls airspeed; pitch also affects airspeed.
+ const throttleAcceleration=(S.throttle-50)*.075;
  const pitchAcceleration=-S.pitch*.12;
- const speedDamping=(170-S.speed)*.006;
+ const speedDamping=(170-S.speed)*.003;
 
  S.speed=clamp(
-  S.speed+(pitchAcceleration+speedDamping)*dt,
+  S.speed+(throttleAcceleration+pitchAcceleration+speedDamping)*dt,
   80,260
  );
 
- // Reduced joystick sensitivity; no artificial pitch or roll limits.
  S.pitch+=S.joyY*19*dt;
  S.bank+=S.joyX*35*dt;
 
- // Gentle damping when the joystick is released.
  if(Math.abs(S.joyY)<.03)
   S.pitch*=Math.pow(.997,dt*60);
 
@@ -1101,16 +547,13 @@ function physics(dt){
  // Pitch controls altitude.
  S.altitude=Math.max(0,S.altitude+S.pitch*180*dt/60);
 
- // Slip task: rudder corrects the initial deviation.
- // Once the ball enters the guide lines, it stays in place.
- if(!S.slipComplete){
-  const rudderAuthority=105;
+ // Slip moves only while rudder is pressed.
+ // It holds its position when the rudder is released.
+ if(!S.slipComplete&&S.rudder!==0){
+  S.slip+=S.rudder*65*dt;
+  S.slip=clamp(S.slip,-100,100);
 
-  S.slip+=S.rudder*rudderAuthority*dt;
-  S.slip=clamp(S.slip,-220,220);
-
-  // Guide lines are approximately at +/- 30% from center.
-  if(Math.abs(S.slip)<=66){
+  if(Math.abs(S.slip)<=50){
    S.slipComplete=true;
   }
  }
@@ -1120,22 +563,22 @@ function physics(dt){
 function updateFD(){
  const hdgError=angleDiff(S.targetHeading,S.heading);
  const altError=S.targetAltitude-S.altitude;
-
  const x=clamp(hdgError*1.05,-55,55);
  const y=clamp(-altError*.045,-48,48);
-
  $('fdCommand').style.transform=`translate(${x}px,${y}px)`;
 }
 
 /* SCORING */
-function scoreSample(){
- const score=(e,scale)=>clamp(100*(1-Math.abs(e)/scale),0,100);
+function score(e,scale){
+ return clamp(100*(1-Math.abs(e)/scale),0,100);
+}
 
+function scoreSample(){
  S.samples.push({
   speed:score(S.speed-170,25),
   altitude:score(S.altitude-S.targetAltitude,900),
   heading:score(angleDiff(S.heading,S.targetHeading),30),
-  slip:S.slipComplete?100:score(S.slip,75)
+  slip:S.slipComplete?100:score(S.slip,100)
  });
 }
 
@@ -1156,7 +599,7 @@ function render(){
  $('bankPointer').style.transform=`rotate(${S.bank}deg)`;
 
  $('slipBall').style.left=
-  `${clamp(50+(S.slip/220)*100,0,100)}%`;
+  `${clamp(50+S.slip*.3,0,100)}%`;
 
  renderVerticalTape('speedTape',S.speed,5,2,n=>Math.round(n),170);
  $('speedPointer').textContent=Math.round(S.speed);
@@ -1174,7 +617,7 @@ function render(){
   ['iasError',Math.abs(S.speed-170),' kt',15],
   ['altError',altErr,' ft',500],
   ['hdgError',hdgErr,'°',15],
-  ['slipError',S.slipComplete?0:Math.abs(S.slip),'%',65]
+  ['slipError',S.slipComplete?0:Math.abs(S.slip),'%',50]
  ];
 
  values.forEach(([id,v,u,limit])=>{
@@ -1198,7 +641,6 @@ function timer(){
 function finish(){
  S.running=false;
  cancelAnimationFrame(raf);
- stopSpeedButtons();
  setJoy(0,0);
  S.rudder=0;
 
@@ -1240,7 +682,6 @@ function loop(t){
  S.slipClock+=dt;
 
  if(S.taskClock>=S.nextTaskAt)newTask();
-
  if(S.slipClock>=S.nextSlipAt)newSlipEvent();
 
  if(S.sampleClock>=.2){
@@ -1291,8 +732,6 @@ function reset(){
  S.running=false;
  if(raf)cancelAnimationFrame(raf);
 
- stopSpeedButtons();
-
  Object.assign(S,{
   speed:170,
   altitude:12000,
@@ -1305,6 +744,7 @@ function reset(){
   joyX:0,
   joyY:0,
   rudder:0,
+  throttle:50,
   targetAltitude:12000,
   targetHeading:0,
   remaining:120,
@@ -1319,6 +759,7 @@ function reset(){
  });
 
  setJoy(0,0);
+ updateThrottleDisplay();
 
  $('results').style.display='none';
  $('startBtn').disabled=false;
@@ -1335,6 +776,7 @@ $('introStart').addEventListener('click',start);
 $('resetBtn').addEventListener('click',reset);
 window.addEventListener('resize',render);
 
+updateThrottleDisplay();
 renderTargets();
 timer();
 render();
