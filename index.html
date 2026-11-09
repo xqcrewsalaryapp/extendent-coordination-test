@@ -1,306 +1,547 @@
 
-<!doctype html>
+<!DOCTYPE html>
 <html lang="tr">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <title>Extended Coordination Test</title>
+
 <style>
 *{box-sizing:border-box}
-html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#000;color:#fff;font-family:Arial,sans-serif;touch-action:none}
-#app{height:100dvh;display:flex;flex-direction:column}
-.top{height:24px;min-height:24px;background:#6488bd;display:flex;align-items:center;justify-content:space-between;padding:0 10px;font-size:11px}
-.top button{border:0;background:transparent;color:white;font-size:11px}
-#main{position:relative;flex:1;min-height:0;display:grid;grid-template-columns:19% 1fr 24%;gap:3px;padding:4px 7px 7px}
-.leftcol,.rightcol{display:flex;flex-direction:column;align-items:center;justify-content:space-between;min-height:0}
-.speedtape,.alttape{height:58%;width:72%;background:#303246;position:relative;overflow:hidden;color:#d7d9e8;font-size:10px}
-.tick{position:absolute;left:5px;right:4px;height:1px;background:#aeb1c2}
-.tick span{position:absolute;right:2px;top:-7px}
-.readout{position:absolute;z-index:2;top:calc(50% - 9px);right:-2px;background:#080808;border:1px solid #eee;color:#fff;padding:2px 4px;font-size:11px}
-.speedtape:after,.alttape:after{content:"";position:absolute;top:50%;left:0;right:0;border-top:1px solid white}
-.controlstack{height:36%;width:100%;display:flex;flex-direction:column;justify-content:space-evenly;align-items:center}
-.controlbtn,.yawbtn{background:#183d78;border:0;color:#fff;touch-action:none}
-.controlbtn{width:58%;height:42%;min-height:28px;font-size:18px}
-.controlbtn:active,.yawbtn:active{background:#2860a8}
-.center{display:flex;flex-direction:column;align-items:center;justify-content:center;min-width:0;position:relative}
-#pfd{width:100%;height:75%;max-height:230px}
-#heading{width:90%;height:18%;min-height:30px;max-height:54px}
-#targets{position:absolute;top:0;left:50%;transform:translateX(-50%);z-index:4;background:#10131de8;border:1px solid #56647f;border-radius:5px;padding:4px 7px;display:flex;gap:10px;white-space:nowrap;font-size:9px}
-.target strong{display:block;color:white;font-size:12px;text-align:center;margin-top:1px}
-.target small{color:#aebbd4}
-.joywrap{height:100%;width:100%;display:flex;align-items:center;justify-content:center}
-#joystick{width:min(100%,min(30vh,150px));aspect-ratio:1;border-radius:50%;background:#102c60;border:1px solid #1d4b8b;position:relative;touch-action:none}
-#joystick:before,#joystick:after{content:"";position:absolute;border:1px solid #31568c;border-radius:50%;inset:20%}
-#joystick:after{inset:40%}
-#stick{position:absolute;width:34%;height:34%;left:33%;top:33%;border-radius:50%;background:#c4c8d0;border:3px solid #101010;pointer-events:none}
-.yawcontrols{width:100%;height:100%;display:flex;align-items:flex-end;justify-content:center;padding-bottom:9%;gap:4px}
-.yawbtn{width:43%;height:39%;font-size:20px}
-#status{position:absolute;bottom:3px;left:50%;transform:translateX(-50%);font-size:9px;color:#9ca9c2;white-space:nowrap}
-#overlay{position:absolute;inset:24px 0 0;background:#000d;z-index:10;display:flex;align-items:center;justify-content:center;text-align:center;padding:20px}
-.modal{max-width:360px;background:#111827;border:1px solid #405170;border-radius:10px;padding:18px}
-.modal h2{font-size:18px;margin:0 0 8px}
-.modal p{font-size:12px;line-height:1.5;color:#c4ccda}
-.primary{background:#2360a5;color:#fff;border:0;border-radius:5px;padding:9px 18px;font-size:13px}
-#feedback{position:absolute;z-index:8;bottom:4px;left:50%;transform:translateX(-50%);font-size:10px;background:#10131ddd;padding:4px 8px;border-radius:4px;white-space:nowrap}
+html,body{
+ margin:0;width:100%;height:100%;overflow:hidden;
+ background:#000;color:#fff;font-family:Arial,sans-serif;
+ touch-action:none;user-select:none
+}
+button{font-family:inherit;touch-action:none}
+#app{height:100dvh;display:flex;flex-direction:column;background:#000}
+header{
+ height:23px;flex-shrink:0;background:#6488bd;
+ display:flex;align-items:center;justify-content:space-between;
+ padding:0 8px;font-size:10px
+}
+header button{background:none;border:0;color:#fff;font-size:10px;padding:4px}
+#screen{
+ flex:1;min-height:0;position:relative;
+ display:grid;grid-template-columns:19% 1fr 24%;
+ align-items:center;padding:3px
+}
+#left,#right{height:100%;position:relative;min-width:0}
+#center{height:100%;display:flex;align-items:center;justify-content:center;min-width:0}
+#pfd{width:100%;height:96%;overflow:visible}
+
+/* Sol IAS kontrolleri */
+#speedControls{
+ position:absolute;top:30%;left:15%;width:55%;height:38%;
+ display:flex;flex-direction:column;justify-content:space-between
+}
+.speedBtn{
+ width:100%;height:40%;background:#aab3c3;color:#26334a;
+ border:1px solid #454b59;font-size:20px
+}
+.speedBtn:active,.yawBtn:active{filter:brightness(1.5)}
+
+/* Heading kontrolleri */
+#yawControls{
+ position:absolute;bottom:10%;left:3%;width:94%;height:24%;
+ display:flex;gap:5px
+}
+.yawBtn{
+ flex:1;background:#183d78;border:1px solid #244b86;color:#fff;
+ font-size:24px;position:relative
+}
+.yawBtn:after{
+ content:"";position:absolute;left:50%;top:50%;
+ transform:translate(-50%,-50%);
+ width:34px;height:34px;border-radius:50%;
+ background:#bfc5ce;border:3px solid #080808
+}
+
+/* Joystick */
+#joystick{
+ position:absolute;right:5%;bottom:10%;width:90%;
+ max-width:150px;aspect-ratio:1;
+ border-radius:50%;background:#15366d;
+ border:2px solid #1b437c;touch-action:none
+}
+#joystick:before{
+ content:"";position:absolute;inset:18%;
+ border:1px solid #35588d;border-radius:50%
+}
+#joystick:after{
+ content:"";position:absolute;inset:36%;
+ border:1px solid #35588d;border-radius:50%
+}
+#stick{
+ position:absolute;width:34%;height:34%;left:33%;top:33%;
+ background:#bfc5cf;border:3px solid #050505;border-radius:50%;
+ pointer-events:none;box-shadow:0 2px 5px #0008
+}
+
+/* Hedef göstergeleri */
+#targets{
+ position:absolute;top:5px;left:50%;transform:translateX(-50%);
+ z-index:3;display:flex;gap:9px;white-space:nowrap;
+ background:#101420eF;border:1px solid #33425e;
+ padding:4px 7px;border-radius:4px
+}
+.target{text-align:center}
+.target small{display:block;font-size:8px;color:#b4bed0}
+.target b{font-size:12px;color:#ffdb64}
+
+/* Alt bilgi */
+#roundInfo{
+ position:absolute;bottom:3px;left:50%;
+ transform:translateX(-50%);font-size:9px;
+ color:#bbc4d7;white-space:nowrap
+}
+#feedback{
+ position:absolute;z-index:5;bottom:20px;left:50%;
+ transform:translateX(-50%);font-size:10px;
+ background:#101420ed;border:1px solid #526080;
+ border-radius:4px;padding:5px 8px;white-space:nowrap
+}
+#overlay{
+ position:fixed;inset:23px 0 0;background:#000e;
+ display:flex;align-items:center;justify-content:center;
+ z-index:10;padding:15px
+}
+.modal{
+ background:#141b2a;border:1px solid #506486;border-radius:9px;
+ padding:18px;width:min(94vw,390px);text-align:center;
+ max-height:90%;overflow:auto
+}
+.modal h2{font-size:19px;margin:0 0 12px}
+.modal p{font-size:12px;line-height:1.6;color:#cbd4e4}
+.primary{
+ background:#2865a9;color:#fff;border:0;border-radius:5px;
+ padding:10px 22px;margin-top:8px;font-size:13px
+}
 .hidden{display:none!important}
+
 @media(orientation:portrait){
- #main{grid-template-columns:18% 1fr 24%;padding:3px}
- #pfd{height:68%}
- #joystick{width:min(100%,18vh,130px)}
- .speedtape,.alttape{height:50%}
- .controlstack{height:42%}
+ #screen{grid-template-columns:18% 1fr 24%}
+ #targets{gap:5px;padding:3px 5px}
+ .target small{font-size:7px}
+ .target b{font-size:10px}
+ #joystick{width:90%}
 }
 </style>
 </head>
+
 <body>
 <div id="app">
-<header class="top">
- <span id="clock">TIME 00:00</span>
+
+<header>
+ <span id="timer">Time: 03:00</span>
  <span>Extended Coordination Test</span>
- <span><button id="pause">Pause</button><button id="exit">Exit</button></span>
+ <span>
+  <button id="pauseBtn">Pause</button>
+  <button id="exitBtn">Exit</button>
+ </span>
 </header>
 
-<main id="main">
-<section class="leftcol">
- <div class="speedtape">
-  <div class="tick" style="top:12%"><span>220</span></div>
-  <div class="tick" style="top:28%"><span>200</span></div>
-  <div class="tick" style="top:44%"><span>180</span></div>
-  <div class="tick" style="top:60%"><span>160</span></div>
-  <div class="tick" style="top:76%"><span>140</span></div>
-  <div class="tick" style="top:92%"><span>120</span></div>
-  <div class="readout" id="speedRead">167</div>
+<main id="screen">
+
+<div id="targets">
+ <div class="target">
+  <small>TARGET IAS</small>
+  <b id="targetSpeed">---</b>
  </div>
- <div class="controlstack">
-  <button class="controlbtn" id="speedUp">↑</button>
-  <button class="controlbtn" id="speedDown">↓</button>
+ <div class="target">
+  <small>TARGET HDG</small>
+  <b id="targetHeading">---</b>
  </div>
+ <div class="target">
+  <small>TARGET PITCH</small>
+  <b id="targetPitch">---</b>
+ </div>
+</div>
+
+<!-- SOL PANEL -->
+<section id="left">
+
+ <div class="speedtape"></div>
+
+ <div id="speedControls">
+  <button class="speedBtn" id="speedUp">↑</button>
+  <button class="speedBtn" id="speedDown">↓</button>
+ </div>
+
+ <div id="yawControls">
+  <button class="yawBtn" id="yawLeft">←</button>
+  <button class="yawBtn" id="yawRight">→</button>
+ </div>
+
 </section>
 
-<section class="center">
- <div id="targets">
-  <div class="target"><small>TARGET IAS</small><strong id="targetSpeed">180</strong></div>
-  <div class="target"><small>TARGET HDG</small><strong id="targetHeading">090°</strong></div>
-  <div class="target"><small>TARGET PITCH</small><strong id="targetPitch">+3°</strong></div>
- </div>
+<!-- MERKEZ: PRIMARY FLIGHT DISPLAY -->
+<section id="center">
 
- <svg id="pfd" viewBox="0 0 240 190">
-  <defs>
-   <clipPath id="skyclip"><rect x="37" y="34" width="166" height="120" rx="8"/></clipPath>
-  </defs>
-  <rect x="37" y="34" width="166" height="120" rx="8" fill="#159fc4"/>
-  <g clip-path="url(#skyclip)">
-   <g id="horizon" transform="translate(0 0) rotate(0 120 94)">
-    <rect x="25" y="-70" width="190" height="164" fill="#079fc6"/>
-    <rect x="25" y="94" width="190" height="164" fill="#d77c20"/>
-    <path d="M25 94H215" stroke="white" stroke-width="2"/>
-    <g stroke="white" stroke-width="1" fill="none">
-     <path d="M80 58h22m16 0h22M90 72h14m32 0h14M80 112h22m16 0h22M90 128h14m32 0h14"/>
-    </g>
-   </g>
-   <g stroke="#fff" stroke-width="1.2" fill="none">
-    <path d="M120 37v18m-12 0h24M120 133v18m-12 0h24"/>
-   </g>
+<svg id="pfd" viewBox="0 0 360 330" preserveAspectRatio="xMidYMid meet">
+
+<defs>
+ <clipPath id="horizonClip">
+  <rect x="87" y="49" width="186" height="169" rx="3"/>
+ </clipPath>
+ <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+  <stop offset="0" stop-color="#139ed0"/>
+  <stop offset="1" stop-color="#08a7cf"/>
+ </linearGradient>
+ <linearGradient id="earth" x1="0" y1="0" x2="0" y2="1">
+  <stop offset="0" stop-color="#c8771c"/>
+  <stop offset="1" stop-color="#aa5513"/>
+ </linearGradient>
+</defs>
+
+<!-- IAS tape -->
+<rect x="24" y="48" width="57" height="172" fill="#343446"/>
+<g id="speedTicks" fill="#d6d8e5" font-size="10"></g>
+<text id="speedTrend" x="45" y="39" font-size="11" fill="#f000dc" text-anchor="middle">167</text>
+<path d="M81 134 L89 140 L81 146" fill="#fff"/>
+<rect x="7" y="131" width="44" height="19" fill="#080808" stroke="#ddd"/>
+<text id="iasText" x="29" y="145" font-size="14" fill="white" text-anchor="middle">167</text>
+
+<!-- Altitude tape -->
+<rect x="280" y="48" width="57" height="172" fill="#343446"/>
+<g id="altTicks" fill="#d6d8e5" font-size="10"></g>
+<text x="309" y="39" font-size="11" fill="#f000dc" text-anchor="middle">12000</text>
+<path d="M280 134 L273 140 L280 146" fill="#fff"/>
+<rect x="308" y="131" width="47" height="19" fill="#080808" stroke="#ddd"/>
+<text id="altText" x="331" y="145" font-size="13" fill="white" text-anchor="middle">12000</text>
+
+<!-- Yapay ufuk -->
+<rect x="87" y="49" width="186" height="169" fill="#079fd0"/>
+
+<g clip-path="url(#horizonClip)">
+ <g id="movingHorizon">
+  <rect x="-300" y="-650" width="960" height="790" fill="url(#sky)"/>
+  <rect x="-300" y="140" width="960" height="790" fill="url(#earth)"/>
+
+  <path d="M-300 140H660" stroke="#fff" stroke-width="2"/>
+
+  <!-- Pitch ladder -->
+  <g stroke="#fff" stroke-width="1.3" fill="none">
+   <path d="M135 90h90 M145 115h70 M135 165h90 M145 190h70"/>
+   <path d="M135 90v5m90-5v5M135 165v-5m90 5v-5"/>
   </g>
-  <path d="M104 94h32l-7 7h-18z" fill="#f5d52b" stroke="#111"/>
-  <path d="M120 28v17M120 145v17" stroke="#f3d32d" stroke-width="1.5"/>
-  <text x="120" y="20" fill="#e5e7eb" font-size="8" text-anchor="middle">BANK</text>
-  <text x="120" y="180" fill="#ddd" font-size="8" text-anchor="middle" id="pitchLabel">PITCH 0°</text>
- </svg>
 
- <svg id="heading" viewBox="0 0 240 50">
-  <path d="M8 37 Q120 -25 232 37" fill="#343448" stroke="#777"/>
-  <g fill="#ddd" font-size="8" text-anchor="middle" id="headingMarks"></g>
-  <path d="M120 2v39" stroke="#fff"/>
-  <rect x="111" y="28" width="18" height="16" rx="2" fill="#080808" stroke="#fff"/>
-  <text id="headingRead" x="120" y="39" fill="#fff" font-size="8" text-anchor="middle">000</text>
- </svg>
- <div id="status">Match the target values using the controls</div>
+  <g fill="white" font-size="9">
+   <text x="128" y="92" text-anchor="end">20</text>
+   <text x="232" y="92">20</text>
+   <text x="138" y="117" text-anchor="end">10</text>
+   <text x="225" y="117">10</text>
+   <text x="128" y="168" text-anchor="end">10</text>
+   <text x="232" y="168">10</text>
+   <text x="138" y="192" text-anchor="end">20</text>
+   <text x="225" y="192">20</text>
+  </g>
+ </g>
+</g>
+
+<rect x="87" y="49" width="186" height="169" fill="none" stroke="#13131b" stroke-width="2"/>
+
+<!-- Sabit uçak sembolü -->
+<g stroke="#fff" stroke-width="3" fill="none">
+ <path d="M107 140h46l12 8"/>
+ <path d="M253 140h-46l-12 8"/>
+</g>
+<path d="M168 140h24l-12 9z" fill="#ffda30" stroke="#111"/>
+<circle cx="180" cy="140" r="3" fill="#ffdb38"/>
+
+<!-- Flight director -->
+<g stroke="#e900dd" stroke-width="3" fill="none">
+ <path d="M150 141h60"/>
+ <path d="M180 112v58"/>
+</g>
+
+<!-- Bank scale -->
+<path d="M100 46 A110 110 0 0 1 260 46" fill="none" stroke="#ddd" stroke-width="1.3"/>
+<g stroke="#fff" stroke-width="2">
+ <path d="M180 29v13"/>
+ <path d="M151 32l4 12"/>
+ <path d="M209 32l-4 12"/>
+ <path d="M125 43l9 11"/>
+ <path d="M235 43l-9 11"/>
+</g>
+<path d="M173 42l7 9 7-9z" fill="#f4e8e8"/>
+<path id="bankPointer" d="M174 21l6 10 6-10z" fill="#f000dc"/>
+
+<!-- Heading arc -->
+<path d="M52 258Q180 197 308 258L328 281H32Z" fill="#37374a"/>
+<g id="compassMarks" font-size="9" fill="#e4e4ed"></g>
+<path d="M180 228v48" stroke="#fff" stroke-width="1.2"/>
+<path d="M174 235l6-10 6 10z" fill="#fff"/>
+<rect x="153" y="303" width="54" height="20" fill="#080808" stroke="#ddd"/>
+<text id="hdgText" x="180" y="317" font-size="13" text-anchor="middle" fill="#fff">000°</text>
+
+</svg>
 </section>
 
-<section class="rightcol">
- <div class="alttape">
-  <div class="tick" style="top:12%"><span>12400</span></div>
-  <div class="tick" style="top:28%"><span>12200</span></div>
-  <div class="tick" style="top:44%"><span>12000</span></div>
-  <div class="tick" style="top:60%"><span>11800</span></div>
-  <div class="tick" style="top:76%"><span>11600</span></div>
-  <div class="tick" style="top:92%"><span>11400</span></div>
-  <div class="readout" id="altRead">12000</div>
- </div>
- <div class="joywrap">
-  <div id="joystick"><div id="stick"></div></div>
+<!-- SAĞ JOYSTICK -->
+<section id="right">
+ <div id="joystick">
+  <div id="stick"></div>
  </div>
 </section>
+
+<div id="roundInfo">Ready</div>
 <div id="feedback" class="hidden"></div>
+
 </main>
 </div>
 
+<!-- EKRANLAR -->
 <div id="overlay">
+
  <div class="modal" id="intro">
-  <h2>Extended Coordination</h2>
-  <p>Her 7–10 saniyede yeni bir hedef seti verilecek. Hız, heading ve pitch değerlerini kumandalarla hedefe yaklaştır. Her turun sonunda doğruluk puanın hesaplanır.</p>
-  <p><b>Hız:</b> sol ↑ / ↓ &nbsp; <b>Yön:</b> orta ← / → &nbsp; <b>Pitch:</b> sağ joystick yukarı / aşağı</p>
-  <button class="primary" id="start">Start Test</button>
+  <h2>Extended Coordination Test</h2>
+  <p>Test süresi 3 dakikadır. Her 7–10 saniyede yeni bir hedef seti verilir.</p>
+  <p>
+   <b>IAS:</b> Sol taraftaki yukarı/aşağı düğmeleri<br>
+   <b>Heading:</b> Sol alttaki sağ/sol düğmeleri<br>
+   <b>Pitch ve Bank:</b> Sağ joystick
+  </p>
+  <p>
+   Joystick aşağı = burun yukarı<br>
+   Joystick yukarı = burun aşağı<br>
+   Joystick sağ = sağ bank<br>
+   Joystick sol = sol bank
+  </p>
+  <button class="primary" id="startBtn">Start Test</button>
  </div>
- <div class="modal hidden" id="summary">
+
+ <div class="modal hidden" id="pauseModal">
+  <h2>Paused</h2>
+  <p>Test duraklatıldı.</p>
+  <button class="primary" id="resumeBtn">Resume</button>
+ </div>
+
+ <div class="modal hidden" id="resultModal">
   <h2>Test Results</h2>
-  <div id="results"></div>
-  <button class="primary" id="restart">Try Again</button>
+  <div id="resultContent"></div>
+  <button class="primary" id="restartBtn">Try Again</button>
  </div>
- <div class="modal hidden" id="pausebox">
-  <h2>Paused</h2><p>Test duraklatıldı.</p>
-  <button class="primary" id="resume">Resume</button>
- </div>
+
 </div>
 
 <script>
 (()=>{
 const $=id=>document.getElementById(id);
-let speed=167,heading=0,pitch=0,bank=0,altitude=12000;
-let target={},round=0,scoreSum=0,results=[];
-let running=false,paused=false,roundEnds=0,startTime=0,raf=0,last=0;
-let feedbackTimer=null;
 
-const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+let speed=167;
+let heading=0;
+let pitch=0;
+let bank=0;
+let altitude=12000;
+
+let target={};
+let results=[];
+let round=0;
+
+let running=false;
+let paused=false;
+
+let startTime=0;
+let lastFrame=0;
+let roundEnd=0;
+let raf=0;
+let feedbackTimer=0;
+
+const TEST_DURATION=180000;
+
+const held={
+ speedUp:false,
+ speedDown:false,
+ yawLeft:false,
+ yawRight:false
+};
+
+const joy={
+ active:false,
+ x:0,
+ y:0
+};
+
+const clamp=(v,min,max)=>Math.max(min,Math.min(max,v));
 const norm=a=>((a%360)+360)%360;
-const angleErr=(a,b)=>((a-b+540)%360)-180;
+const angleError=(a,b)=>((a-b+540)%360)-180;
 
-function newTarget(){
- const old=target;
+function formatTime(ms){
+ const seconds=Math.max(0,Math.ceil(ms/1000));
+ return 'Time: '+String(Math.floor(seconds/60)).padStart(2,'0')+':'+
+ String(seconds%60).padStart(2,'0');
+}
+
+/* TAPE GÖSTERGELERİ */
+function createTicks(){
+ const speedGroup=$('speedTicks');
+ const altGroup=$('altTicks');
+
+ speedGroup.innerHTML='';
+ altGroup.innerHTML='';
+
+ for(let i=0;i<7;i++){
+  const y=60+i*25;
+  const speedValue=220-i*20;
+
+  const line=document.createElementNS('http://www.w3.org/2000/svg','line');
+  line.setAttribute('x1','24');
+  line.setAttribute('x2','81');
+  line.setAttribute('y1',y);
+  line.setAttribute('y2',y);
+  line.setAttribute('stroke','#aeb1c2');
+  line.setAttribute('stroke-width','.6');
+  speedGroup.appendChild(line);
+
+  const text=document.createElementNS('http://www.w3.org/2000/svg','text');
+  text.setAttribute('x','75');
+  text.setAttribute('y',y-3);
+  text.setAttribute('text-anchor','end');
+  text.textContent=speedValue;
+  speedGroup.appendChild(text);
+
+  const altText=document.createElementNS('http://www.w3.org/2000/svg','text');
+  altText.setAttribute('x','332');
+  altText.setAttribute('y',y-3);
+  altText.setAttribute('text-anchor','end');
+  altText.textContent=12400-i*200;
+  altGroup.appendChild(altText);
+ }
+}
+
+/* HEADING GÖSTERGESİ */
+function updateCompass(){
+ const group=$('compassMarks');
+ group.innerHTML='';
+
+ for(let i=-3;i<=3;i++){
+  const value=norm(Math.round(heading/10)*10+i*10);
+  const text=document.createElementNS('http://www.w3.org/2000/svg','text');
+
+  text.setAttribute('x',180+i*34);
+  text.setAttribute('y',260+Math.abs(i)*3);
+  text.setAttribute('text-anchor','middle');
+  text.textContent=String(value).padStart(3,'0');
+
+  group.appendChild(text);
+ }
+}
+
+/* EKRAN GÜNCELLEME */
+function updateDisplay(){
+ $('iasText').textContent=Math.round(speed);
+ $('altText').textContent=Math.round(altitude);
+ $('hdgText').textContent=String(Math.round(norm(heading))).padStart(3,'0')+'°';
+
+ /*
+ Pitch pozitif = burun yukarı.
+ Burun yukarı olduğunda ufuk ekranda aşağı hareket eder.
+ Bank sağa olduğunda ufuk sola döner.
+ */
+ $('movingHorizon').setAttribute(
+  'transform',
+  `translate(0 ${pitch*2.2}) rotate(${-bank} 180 140)`
+ );
+
+ $('bankPointer').setAttribute(
+  'transform',
+  `rotate(${bank} 180 40)`
+ );
+
+ updateCompass();
+}
+
+/* YENİ HEDEF */
+function createTarget(){
  target={
   speed:Math.round(clamp(speed+(Math.random()*50-25),130,220)/5)*5,
-  heading:Math.round(norm(heading+(Math.random()*100-50))/5)*5%360,
+  heading:norm(Math.round((heading+(Math.random()*100-50))/5)*5),
   pitch:Math.round(clamp(pitch+(Math.random()*10-5),-10,10))
  };
- if(old.speed===target.speed)target.speed=clamp(target.speed+10,130,220);
- if(old.heading===target.heading)target.heading=norm(target.heading+20);
- if(old.pitch===target.pitch)target.pitch=clamp(target.pitch+2,-10,10);
 
  $('targetSpeed').textContent=target.speed;
  $('targetHeading').textContent=String(target.heading).padStart(3,'0')+'°';
  $('targetPitch').textContent=(target.pitch>0?'+':'')+target.pitch+'°';
- roundEnds=performance.now()+(7000+Math.random()*3000);
- $('status').textContent='Round '+(round+1)+' · Match all three targets';
+
+ const interval=7000+Math.random()*3000;
+ roundEnd=performance.now()+interval;
+
+ $('roundInfo').textContent='Round '+(round+1)+' · Match target values';
 }
 
-function grade(){
- const es=Math.abs(speed-target.speed);
- const eh=Math.abs(angleErr(heading,target.heading));
- const ep=Math.abs(pitch-target.pitch);
- const ps=clamp(100-es*5,0,100);
- const ph=clamp(100-eh*3,0,100);
- const pp=clamp(100-ep*12,0,100);
- const total=Math.round((ps+ph+pp)/3);
+/* DOĞRULUK HESABI */
+function calculateScore(){
+ const speedError=Math.abs(speed-target.speed);
+ const headingError=Math.abs(angleError(heading,target.heading));
+ const pitchError=Math.abs(pitch-target.pitch);
+
+ const speedScore=clamp(100-speedError*5,0,100);
+ const headingScore=clamp(100-headingError*3,0,100);
+ const pitchScore=clamp(100-pitchError*12,0,100);
+
+ const total=Math.round(
+  (speedScore+headingScore+pitchScore)/3
+ );
 
  results.push({
-  speed:Math.round(ps),
-  heading:Math.round(ph),
-  pitch:Math.round(pp),
+  speed:Math.round(speedScore),
+  heading:Math.round(headingScore),
+  pitch:Math.round(pitchScore),
   total
  });
- scoreSum+=total;
+
+ round++;
 
  $('feedback').classList.remove('hidden');
  $('feedback').textContent=
-  `Round ${round+1}: ${total}% · IAS ${es.toFixed(0)}kt · HDG ${eh.toFixed(0)}° · PITCH ${ep.toFixed(1)}°`;
+  `Round ${round}: ${total}% | IAS error ${speedError.toFixed(0)} | HDG error ${headingError.toFixed(0)}° | Pitch error ${pitchError.toFixed(1)}°`;
 
  clearTimeout(feedbackTimer);
- feedbackTimer=setTimeout(()=>$('feedback').classList.add('hidden'),1700);
- round++;
+ feedbackTimer=setTimeout(()=>{
+  $('feedback').classList.add('hidden');
+ },1800);
 }
 
-function updateDisplay(){
- $('speedRead').textContent=Math.round(speed);
- $('headingRead').textContent=String(Math.round(norm(heading))).padStart(3,'0');
- $('altRead').textContent=Math.round(altitude);
- $('pitchLabel').textContent='PITCH '+(pitch>0?'+':'')+pitch.toFixed(1)+'°';
-
- $('horizon').setAttribute(
-  'transform',
-  `translate(0 ${-pitch*2}) rotate(${-bank*1.1} 120 94)`
- );
-
- const marks=$('headingMarks');
- marks.innerHTML='';
- for(let i=-2;i<=2;i++){
-  const val=norm(Math.round(heading/10)*10+i*10);
-  const t=document.createElementNS('http://www.w3.org/2000/svg','text');
-  t.setAttribute('x',120+i*36);
-  t.setAttribute('y',31+Math.abs(i)*3);
-  t.textContent=String(val).padStart(3,'0');
-  marks.appendChild(t);
- }
-}
-
-const held={speedUp:false,speedDown:false,yawL:false,yawR:false};
-
-function frame(now){
- if(!running||paused)return;
-
- const dt=Math.min((now-last)/1000,.05);
- last=now;
-
- if(held.speedUp)speed=clamp(speed+12*dt,100,260);
- if(held.speedDown)speed=clamp(speed-12*dt,100,260);
- if(held.yawL)heading=norm(heading-34*dt);
- if(held.yawR)heading=norm(heading+34*dt);
-
- if(joy.active){
-  pitch=clamp(pitch+(-joy.y)*18*dt,-15,15);
-  bank=clamp(bank+joy.x*28*dt,-30,30);
- }else{
-  pitch+=(0-pitch)*Math.min(1,dt*2.5);
-  bank+=(0-bank)*Math.min(1,dt*2.5);
- }
-
- altitude=clamp(altitude+pitch*dt*3,0,40000);
- $('clock').textContent='TIME '+fmt((now-startTime)/1000);
- updateDisplay();
-
- if(now>=roundEnds){
-  grade();
-  newTarget();
- }
- raf=requestAnimationFrame(frame);
-}
-
-function fmt(s){
- return String(Math.floor(s/60)).padStart(2,'0')+':'+
- String(Math.floor(s%60)).padStart(2,'0');
-}
-
+/* KONTROLLER */
 function bindHold(id,key){
- const el=$(id);
- const down=e=>{
+ const button=$(id);
+
+ function down(e){
   e.preventDefault();
   held[key]=true;
-  el.classList.add('active');
- };
- const up=e=>{
+  button.classList.add('pressed');
+ }
+
+ function up(e){
   e.preventDefault();
   held[key]=false;
-  el.classList.remove('active');
- };
- el.addEventListener('pointerdown',down);
- ['pointerup','pointercancel','pointerleave'].forEach(ev=>el.addEventListener(ev,up));
+  button.classList.remove('pressed');
+ }
+
+ button.addEventListener('pointerdown',down);
+ ['pointerup','pointercancel','pointerleave'].forEach(event=>{
+  button.addEventListener(event,up);
+ });
 }
 
 bindHold('speedUp','speedUp');
 bindHold('speedDown','speedDown');
-bindHold('yawL','yawL');
-bindHold('yawR','yawR');
+bindHold('yawLeft','yawLeft');
+bindHold('yawRight','yawRight');
 
-const joy={active:false,x:0,y:0};
+/* JOYSTICK */
 const pad=$('joystick');
 const stick=$('stick');
 
-function moveJoy(e){
- const r=pad.getBoundingClientRect();
- const cx=r.left+r.width/2;
- const cy=r.top+r.height/2;
- joy.x=clamp((e.clientX-cx)/(r.width*.32),-1,1);
- joy.y=clamp((e.clientY-cy)/(r.height*.32),-1,1);
+function moveJoystick(e){
+ const rect=pad.getBoundingClientRect();
+ const centerX=rect.left+rect.width/2;
+ const centerY=rect.top+rect.height/2;
+
+ joy.x=clamp((e.clientX-centerX)/(rect.width*.32),-1,1);
+ joy.y=clamp((e.clientY-centerY)/(rect.height*.32),-1,1);
+
  stick.style.left=(33+joy.x*28)+'%';
  stick.style.top=(33+joy.y*28)+'%';
 }
@@ -309,32 +550,84 @@ pad.addEventListener('pointerdown',e=>{
  e.preventDefault();
  joy.active=true;
  pad.setPointerCapture(e.pointerId);
- moveJoy(e);
-});
-pad.addEventListener('pointermove',e=>{
- if(joy.active)moveJoy(e);
+ moveJoystick(e);
 });
 
-function releaseJoy(){
+pad.addEventListener('pointermove',e=>{
+ if(joy.active)moveJoystick(e);
+});
+
+function releaseJoystick(){
  joy.active=false;
  joy.x=0;
  joy.y=0;
  stick.style.left='33%';
  stick.style.top='33%';
 }
-pad.addEventListener('pointerup',releaseJoy);
-pad.addEventListener('pointercancel',releaseJoy);
 
-function start(){
+pad.addEventListener('pointerup',releaseJoystick);
+pad.addEventListener('pointercancel',releaseJoystick);
+
+/* ANA SİMÜLASYON */
+function updateFrame(now){
+ if(!running||paused)return;
+
+ const dt=Math.min((now-lastFrame)/1000,.05);
+ lastFrame=now;
+
+ // IAS
+ if(held.speedUp)speed=clamp(speed+12*dt,100,260);
+ if(held.speedDown)speed=clamp(speed-12*dt,100,260);
+
+ // Heading
+ if(held.yawLeft)heading=norm(heading-34*dt);
+ if(held.yawRight)heading=norm(heading+34*dt);
+
+ /*
+ Joystick Y ekseni:
+ joy.y negatif = joystick yukarı = burun aşağı.
+ joy.y pozitif = joystick aşağı = burun yukarı.
+ */
+ if(joy.active){
+  pitch=clamp(pitch+joy.y*18*dt,-15,15);
+
+  // Joystick sağ = sağ bank, sol = sol bank.
+  bank=clamp(bank+joy.x*28*dt,-30,30);
+ }else{
+  pitch+=(0-pitch)*Math.min(1,dt*2.5);
+  bank+=(0-bank)*Math.min(1,dt*2.5);
+ }
+
+ altitude=clamp(altitude+pitch*dt*3,0,40000);
+
+ updateDisplay();
+
+ const elapsed=now-startTime;
+ const remaining=TEST_DURATION-elapsed;
+
+ $('timer').textContent=formatTime(remaining);
+
+ if(remaining<=0){
+  finishTest();
+  return;
+ }
+
+ if(now>=roundEnd){
+  calculateScore();
+  createTarget();
+ }
+
+ raf=requestAnimationFrame(updateFrame);
+}
+
+/* TEST BAŞLAT */
+function startTest(){
+ clearTimeout(feedbackTimer);
+
  $('overlay').classList.add('hidden');
  $('intro').classList.add('hidden');
- $('summary').classList.add('hidden');
-
- running=true;
- paused=false;
- round=0;
- scoreSum=0;
- results=[];
+ $('pauseModal').classList.add('hidden');
+ $('resultModal').classList.add('hidden');
 
  speed=167;
  heading=0;
@@ -342,60 +635,90 @@ function start(){
  bank=0;
  altitude=12000;
 
+ results=[];
+ round=0;
+
+ Object.keys(held).forEach(key=>held[key]=false);
+ releaseJoystick();
+
+ running=true;
+ paused=false;
+
  startTime=performance.now();
- last=startTime;
- newTarget();
+ lastFrame=startTime;
+
+ createTarget();
  updateDisplay();
 
+ $('timer').textContent='Time: 03:00';
+
  cancelAnimationFrame(raf);
- raf=requestAnimationFrame(frame);
+ raf=requestAnimationFrame(updateFrame);
 }
 
-function pause(){
- if(!running)return;
+/* DURAKLAT */
+function pauseTest(){
+ if(!running||paused)return;
+
  paused=true;
  cancelAnimationFrame(raf);
+
  $('overlay').classList.remove('hidden');
- $('pausebox').classList.remove('hidden');
+ $('pauseModal').classList.remove('hidden');
 }
 
-function resume(){
+function resumeTest(){
  paused=false;
+
  $('overlay').classList.add('hidden');
- $('pausebox').classList.add('hidden');
- last=performance.now();
- raf=requestAnimationFrame(frame);
+ $('pauseModal').classList.add('hidden');
+
+ lastFrame=performance.now();
+ raf=requestAnimationFrame(updateFrame);
 }
 
-function finish(){
+/* SONUÇLAR */
+function average(key){
+ if(!results.length)return 0;
+
+ return Math.round(
+  results.reduce((sum,result)=>sum+result[key],0)/results.length
+ );
+}
+
+function finishTest(){
  running=false;
  paused=false;
+
  cancelAnimationFrame(raf);
+ releaseJoystick();
+
+ const overall=average('total');
 
  $('overlay').classList.remove('hidden');
- $('summary').classList.remove('hidden');
+ $('resultModal').classList.remove('hidden');
 
- const avg=results.length?Math.round(scoreSum/results.length):0;
-
- $('results').innerHTML=
- `<p>Completed rounds: <b>${results.length}</b></p>
- <h2>${avg}% overall accuracy</h2>
- <p>Speed: ${avgOf('speed')}% · Heading: ${avgOf('heading')}% · Pitch: ${avgOf('pitch')}%</p>
- <p style="font-size:11px;color:#aab6ca">Score rewards proximity to each target at the end of each interval.</p>`;
+ $('resultContent').innerHTML=`
+  <p>Completed rounds: <b>${results.length}</b></p>
+  <h2 style="font-size:28px;color:#ffdb64">${overall}%</h2>
+  <p>Overall accuracy</p>
+  <hr style="border-color:#39465e">
+  <p>IAS accuracy: <b>${average('speed')}%</b></p>
+  <p>Heading accuracy: <b>${average('heading')}%</b></p>
+  <p>Pitch accuracy: <b>${average('pitch')}%</b></p>
+ `;
 }
 
-function avgOf(k){
- return results.length?
- Math.round(results.reduce((a,r)=>a+r[k],0)/results.length):0;
-}
+/* BUTONLAR */
+$('startBtn').addEventListener('click',startTest);
+$('restartBtn').addEventListener('click',startTest);
+$('pauseBtn').addEventListener('click',pauseTest);
+$('resumeBtn').addEventListener('click',resumeTest);
+$('exitBtn').addEventListener('click',finishTest);
 
-$('start').onclick=start;
-$('restart').onclick=start;
-$('pause').onclick=pause;
-$('resume').onclick=resume;
-$('exit').onclick=finish;
-
+createTicks();
 updateDisplay();
+
 })();
 </script>
 </body>
