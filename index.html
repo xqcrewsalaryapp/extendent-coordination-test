@@ -24,6 +24,17 @@ button{font:inherit;color:inherit}
 .status{font-size:10px;color:var(--muted);margin-top:3px}
 .timer{font-size:20px;font-weight:bold;font-variant-numeric:tabular-nums}
 .panel{background:linear-gradient(145deg,#142033,#0d1624);border:1px solid var(--line);border-radius:11px;padding:9px;margin-bottom:9px}
+
+/* Difficulty */
+.difficulty-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.difficulty-btn{background:#101a28;border:1px solid #34465f;border-radius:8px;padding:10px 3px;color:#8495ac;cursor:pointer}
+.difficulty-btn strong{display:block;font-size:11px;margin-bottom:5px}
+.difficulty-btn small{display:block;font-size:8px}
+.difficulty-btn.active{background:#18334b;border-color:var(--cyan);color:#fff}
+.difficulty-btn:disabled{opacity:.5;cursor:not-allowed}
+.control-heading{text-align:center;font-size:10px;color:var(--muted);letter-spacing:1px;margin-bottom:8px}
+.instructions{color:var(--muted);font-size:9px;line-height:1.5;margin-top:7px;text-align:center}
+
 .target-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
 .target{background:#091321;border:1px solid #293b53;border-radius:8px;padding:9px 3px;text-align:center}
 .target small{display:block;font-size:9px;color:var(--muted);margin-bottom:5px;letter-spacing:.7px}
@@ -31,6 +42,7 @@ button{font:inherit;color:inherit}
 .target strong span{font-size:9px;color:var(--muted);font-weight:normal}
 .task-line{text-align:center;color:var(--magenta);font-size:10px;margin-top:8px;letter-spacing:.5px}
 
+/* Main display */
 .main-grid{display:grid;grid-template-columns:62px minmax(0,1fr) 62px;gap:6px;align-items:stretch}
 .side-panel{background:#101b2a;border:1px solid var(--line);border-radius:9px;padding:7px 3px;display:flex;flex-direction:column;align-items:center;justify-content:space-between;min-height:300px}
 .side-label{font-size:9px;color:var(--muted);text-align:center}
@@ -46,7 +58,7 @@ button{font:inherit;color:inherit}
 .tape-target:before{content:"";position:absolute;left:0;top:-4px;border-top:5px solid transparent;border-bottom:5px solid transparent;border-left:7px solid var(--magenta)}
 .tape-caption{font-size:8px;color:var(--muted);text-align:center;margin-top:3px}
 
-/* A320-inspired PFD */
+/* PFD */
 .pfd{min-width:0;background:#02060b;border:2px solid #718397;border-radius:3px;overflow:hidden;aspect-ratio:1.05/1;display:flex;flex-direction:column;box-shadow:0 0 0 1px #000}
 .pfd-screen{flex:1;position:relative;overflow:hidden;background:#101c2b}
 .horizon{position:absolute;inset:-100%;transform-origin:center center;overflow:hidden}
@@ -72,7 +84,7 @@ button{font:inherit;color:inherit}
 .pfd-bottom-info{position:absolute;z-index:8;bottom:5px;left:6px;right:6px;display:flex;justify-content:space-between;color:var(--cyan);font-size:8px;text-shadow:0 1px 3px #000;pointer-events:none}
 .pfd-mode{color:var(--magenta);font-weight:bold}
 
-/* Heading tape */
+/* Heading */
 .heading-tape{height:42px;position:relative;overflow:hidden;background:#050a10;border-top:1px solid #718397;border-bottom:1px solid #718397}
 .heading-scale{position:absolute;inset:0;white-space:nowrap}
 .heading-mark{position:absolute;top:4px;transform:translateX(-50%);font-size:10px;color:#fff;text-align:center;font-weight:bold}
@@ -94,12 +106,9 @@ button{font:inherit;color:inherit}
 .rudder-btn{min-width:95px;padding:9px;border-radius:7px;border:1px solid #465c78;background:#1a2b41;font-size:12px;touch-action:none}
 .rudder-btn:active,.rudder-btn.active{background:#365678;border-color:var(--cyan)}
 
-/* Controls row */
+/* Controls */
 .controls-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;align-items:stretch;margin-top:9px}
 .control-card{border:1px solid var(--line);background:#101a28;border-radius:9px;padding:8px;min-width:0}
-.control-heading{text-align:center;font-size:10px;color:var(--muted);letter-spacing:1px;margin-bottom:8px}
-
-/* Vertical throttle */
 .throttle-panel{margin-top:0;min-width:0;display:flex;flex-direction:column;justify-content:space-between;background:#101a28;border:1px solid var(--line);border-radius:9px;padding:12px 7px}
 .throttle-head{display:flex;justify-content:space-between;align-items:center;gap:3px;font-size:9px;color:var(--muted);letter-spacing:.7px;margin-bottom:8px}
 .throttle-head strong{color:var(--cyan);font-size:12px;font-variant-numeric:tabular-nums}
@@ -111,17 +120,12 @@ button{font:inherit;color:inherit}
 .throttle-range::-moz-range-thumb{width:32px;height:15px;border-radius:5px;background:#cbd7e4;border:2px solid #40546d}
 .throttle-center{position:absolute;left:0;right:0;top:50%;height:1px;background:#71869d;pointer-events:none}
 .throttle-note{text-align:center;color:var(--muted);font-size:8px;line-height:1.4;margin-top:8px}
-
-/* Joystick */
 .joystick-zone{height:140px;background:radial-gradient(circle,#1d3049,#0a1320 72%);border:1px solid #334b68;border-radius:9px;position:relative;overflow:hidden;touch-action:none}
 .joy-cross-h,.joy-cross-v{position:absolute;background:#344a64}
 .joy-cross-h{height:1px;width:100%;top:50%}.joy-cross-v{width:1px;height:100%;left:50%}
 .joy-ring{position:absolute;width:94px;height:94px;border:1px dashed #536b88;border-radius:50%;left:50%;top:50%;transform:translate(-50%,-50%)}
 .joy-knob{position:absolute;width:43px;height:43px;border-radius:50%;left:50%;top:50%;transform:translate(-50%,-50%);background:linear-gradient(145deg,#d9e4f1,#687e98);border:3px solid #243a55;box-shadow:0 3px 10px #0009;pointer-events:none}
 .joy-labels{display:flex;justify-content:space-between;gap:3px;font-size:8px;color:var(--muted);margin-top:6px}
-.instructions{color:var(--muted);font-size:9px;line-height:1.5;margin-top:7px;text-align:center}
-
-/* Flight parameters */
 .control-area{display:block;margin-top:9px}
 .score-row{display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid #293a50;font-size:11px;gap:5px}
 .score-row strong{font-variant-numeric:tabular-nums}
@@ -176,9 +180,31 @@ button{font:inherit;color:inherit}
   <div class="timer" id="timer">02:00</div>
  </div>
 
+ <!-- DIFFICULTY SELECTOR -->
+ <div class="panel">
+  <div class="control-heading">DIFFICULTY LEVEL</div>
+  <div class="difficulty-grid">
+   <button class="difficulty-btn active" data-level="1">
+    <strong>LEVEL 1</strong>
+    <small>ALT + HDG</small>
+   </button>
+   <button class="difficulty-btn" data-level="2">
+    <strong>LEVEL 2</strong>
+    <small>ALT + HDG + IAS</small>
+   </button>
+   <button class="difficulty-btn" data-level="3">
+    <strong>LEVEL 3</strong>
+    <small>ALL TASKS</small>
+   </button>
+  </div>
+  <div id="difficultyDescription" class="instructions">
+   Altitude and heading coordination
+  </div>
+ </div>
+
  <div class="panel">
   <div class="target-grid">
-   <div class="target"><small>TARGET IAS</small><strong>170 <span>KT</span></strong></div>
+   <div class="target"><small>TARGET IAS</small><strong id="targetSpeed">170 <span>KT</span></strong></div>
    <div class="target"><small>TARGET ALTITUDE</small><strong id="targetAltitude">12,000 <span>FT</span></strong></div>
    <div class="target"><small>TARGET HEADING</small><strong id="targetHeading">000°</strong></div>
   </div>
@@ -269,21 +295,15 @@ button{font:inherit;color:inherit}
     <span>THROTTLE</span>
     <strong id="throttleValue">50%</strong>
    </div>
-
    <div class="throttle-control">
     <div class="throttle-scale">
-     <span>MAX</span>
-     <span>50%</span>
-     <span>IDLE</span>
+     <span>MAX</span><span>50%</span><span>IDLE</span>
     </div>
     <div class="throttle-track">
      <div class="throttle-center"></div>
-     <input class="throttle-range" id="throttle"
-      type="range" min="0" max="100" value="50" step="1"
-      aria-label="Vertical throttle">
+     <input class="throttle-range" id="throttle" type="range" min="0" max="100" value="50" step="1" aria-label="Vertical throttle">
     </div>
    </div>
-
    <div class="throttle-note">UP: INCREASE<br>DOWN: DECREASE</div>
   </div>
 
@@ -296,8 +316,7 @@ button{font:inherit;color:inherit}
     <div class="joy-knob" id="joyKnob"></div>
    </div>
    <div class="joy-labels">
-    <span>LEFT BANK</span>
-    <span>RIGHT BANK</span>
+    <span>LEFT BANK</span><span>RIGHT BANK</span>
    </div>
    <div class="instructions">
     UP: NOSE DOWN<br>
@@ -308,14 +327,15 @@ button{font:inherit;color:inherit}
 
  </div>
 
+ <!-- FLIGHT PARAMETERS -->
  <div class="control-area">
   <div class="control-card">
    <div class="control-heading">FLIGHT PARAMETERS</div>
    <div class="instructions">Follow the magenta Flight Director to reach the current task targets.</div>
-   <div class="score-row"><span>IAS deviation</span><strong id="iasError">0 kt</strong></div>
+   <div class="score-row"><span>IAS deviation</span><strong id="iasError">—</strong></div>
    <div class="score-row"><span>Altitude deviation</span><strong id="altError">0 ft</strong></div>
    <div class="score-row"><span>Heading deviation</span><strong id="hdgError">0°</strong></div>
-   <div class="score-row"><span>Slip deviation</span><strong id="slipError">0%</strong></div>
+   <div class="score-row"><span>Slip deviation</span><strong id="slipError">—</strong></div>
    <div class="instructions" id="nextTask">Next task: --</div>
   </div>
  </div>
@@ -327,10 +347,10 @@ button{font:inherit;color:inherit}
 
  <div class="results" id="results">
   <h2>TEST RESULTS</h2>
-  <div class="score-row"><span>Airspeed control</span><strong id="scoreSpeed">0%</strong></div>
+  <div class="score-row"><span>Airspeed control</span><strong id="scoreSpeed">N/A</strong></div>
   <div class="score-row"><span>Altitude control</span><strong id="scoreAlt">0%</strong></div>
   <div class="score-row"><span>Heading control</span><strong id="scoreHeading">0%</strong></div>
-  <div class="score-row"><span>Yaw / slip coordination</span><strong id="scoreSlip">0%</strong></div>
+  <div class="score-row"><span>Yaw / slip coordination</span><strong id="scoreSlip">N/A</strong></div>
   <div class="final-score" id="finalScore">0%</div>
   <div class="result-note">Training score · Not an official SkyTest score</div>
  </div>
@@ -340,9 +360,9 @@ button{font:inherit;color:inherit}
 <div class="overlay" id="intro">
  <div class="overlay-card">
   <h1>Extended Coordination Test</h1>
-  <p>Maintain target airspeed and follow the changing heading and altitude tasks. Use the joystick for attitude and rudder buttons to control the slip ball.</p>
-  <p><b>Duration:</b> 2 minutes<br><b>Target IAS:</b> 170 kt<br><b>New task:</b> every 15–20 seconds</p>
-  <p>Use the vertical throttle lever to control airspeed. Nose down increases speed; nose up decreases speed.</p>
+  <p>Maintain the active targets using the joystick, throttle and rudder controls.</p>
+  <p><b>Duration:</b> 2 minutes<br><b>Selected level:</b> <span id="introLevel">Level 1</span></p>
+  <p id="introDescription">Altitude and heading coordination.</p>
   <button id="introStart">BEGIN</button>
  </div>
 </div>
@@ -354,19 +374,76 @@ const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
 const wrap360=v=>((v%360)+360)%360;
 const angleDiff=(a,b)=>((a-b+540)%360)-180;
 
+const LEVELS={
+ 1:{
+  heading:20,
+  altitude:1000,
+  speed:0,
+  interval:15,
+  slip:false,
+  description:"Altitude and heading coordination"
+ },
+ 2:{
+  heading:30,
+  altitude:1200,
+  speed:20,
+  interval:15,
+  slip:false,
+  description:"Altitude, heading and airspeed coordination"
+ },
+ 3:{
+  heading:45,
+  altitude:1500,
+  speed:25,
+  interval:15,
+  slip:true,
+  description:"Full coordination: altitude, heading, airspeed and slip"
+ }
+};
+
 const S={
+ level:1,
  speed:170,altitude:12000,heading:0,pitch:0,bank:0,
  slip:0,slipTarget:0,slipComplete:false,
  joyX:0,joyY:0,rudder:0,throttle:50,
- targetAltitude:12000,targetHeading:0,
+ targetSpeed:170,targetAltitude:12000,targetHeading:0,
  running:false,remaining:120,elapsed:0,lastTime:0,
- sampleClock:0,taskClock:0,nextTaskAt:17,
- slipClock:0,nextSlipAt:12,taskNumber:1,samples:[]
+ sampleClock:0,taskClock:0,nextTaskAt:15,
+ slipClock:0,nextSlipAt:999999,
+ taskNumber:1,samples:[]
 };
 
 let raf=null,joyPointer=null;
 const joystick=$('joystick');
 const knob=$('joyKnob');
+
+function config(){
+ return LEVELS[S.level];
+}
+
+/* LEVEL SELECTOR */
+function updateLevelUI(){
+ const c=config();
+
+ document.querySelectorAll('.difficulty-btn').forEach(btn=>{
+  const active=Number(btn.dataset.level)===S.level;
+  btn.classList.toggle('active',active);
+  btn.disabled=S.running;
+ });
+
+ $('difficultyDescription').textContent=c.description;
+ $('introLevel').textContent='Level '+S.level;
+ $('introDescription').textContent=c.description;
+}
+
+document.querySelectorAll('.difficulty-btn').forEach(btn=>{
+ btn.addEventListener('click',()=>{
+  if(S.running)return;
+  S.level=Number(btn.dataset.level);
+  updateLevelUI();
+  reset();
+ });
+});
 
 /* JOYSTICK */
 function setJoy(x,y){
@@ -375,6 +452,7 @@ function setJoy(x,y){
  knob.style.left=`calc(50% + ${S.joyX*42}px)`;
  knob.style.top=`calc(50% + ${S.joyY*42}px)`;
 }
+
 function moveJoy(e){
  const r=joystick.getBoundingClientRect();
  let x=(e.clientX-r.left-r.width/2)/(r.width*.39);
@@ -383,6 +461,7 @@ function moveJoy(e){
  if(m>1){x/=m;y/=m}
  setJoy(x,y);
 }
+
 joystick.addEventListener('pointerdown',e=>{
  if(!S.running)return;
  e.preventDefault();
@@ -410,6 +489,7 @@ $('throttle').addEventListener('input',e=>{
  S.throttle=Number(e.target.value);
  updateThrottleDisplay();
 });
+
 function updateThrottleDisplay(){
  const value=Math.round(S.throttle);
  $('throttle').value=value;
@@ -421,7 +501,7 @@ function updateThrottleDisplay(){
 function bindHold(id,callback){
  const el=$(id);
  el.addEventListener('pointerdown',e=>{
-  if(!S.running)return;
+  if(!S.running||!config().slip)return;
   e.preventDefault();
   el.setPointerCapture(e.pointerId);
   el.classList.add('active');
@@ -435,6 +515,7 @@ function bindHold(id,callback){
  el.addEventListener('pointercancel',stop);
  el.addEventListener('lostpointercapture',stop);
 }
+
 bindHold('rudderLeft',v=>{
  if(v)S.rudder=-1;
  else if(S.rudder===-1)S.rudder=0;
@@ -453,14 +534,19 @@ window.addEventListener('keydown',e=>{
 window.addEventListener('keyup',e=>{
  keys[e.key.toLowerCase()]=false;
 });
+
 function keyboard(){
  if(keys.arrowup)S.throttle=clamp(S.throttle+.8,0,100);
  if(keys.arrowdown)S.throttle=clamp(S.throttle-.8,0,100);
  updateThrottleDisplay();
 
- if(keys.z)S.rudder=-1;
- else if(keys.x)S.rudder=1;
- else if(!document.querySelector('.rudder-btn.active'))S.rudder=0;
+ if(config().slip){
+  if(keys.z)S.rudder=-1;
+  else if(keys.x)S.rudder=1;
+  else if(!document.querySelector('.rudder-btn.active'))S.rudder=0;
+ }else{
+  S.rudder=0;
+ }
 
  if(!joyPointer){
   S.joyX=(keys.arrowright?1:0)-(keys.arrowleft?1:0);
@@ -468,7 +554,7 @@ function keyboard(){
  }
 }
 
-/* TAPES */
+/* VERTICAL TAPES */
 function renderVerticalTape(containerId,value,step,majorEvery,format,target){
  const el=$(containerId);
  const height=el.clientHeight;
@@ -490,6 +576,8 @@ function renderVerticalTape(containerId,value,step,majorEvery,format,target){
  }
  el.innerHTML=html;
 }
+
+/* HEADING TAPE */
 function renderHeadingTape(){
  const el=$('headingScale');
  const width=el.clientWidth;
@@ -512,49 +600,87 @@ function renderHeadingTape(){
  el.innerHTML=html;
 }
 
-/* TASKS */
+/* TARGET DISPLAY */
 function renderTargets(){
  $('targetAltitude').innerHTML=
   `${Math.round(S.targetAltitude).toLocaleString('en-US')} <span>FT</span>`;
+
  $('targetHeading').textContent=
   String(Math.round(S.targetHeading)).padStart(3,'0')+'°';
- $('taskLine').textContent=
-  `TASK ${String(S.taskNumber).padStart(2,'0')} · HDG ${String(Math.round(S.targetHeading)).padStart(3,'0')}° · ALT ${Math.round(S.targetAltitude).toLocaleString('en-US')} FT`;
-}
-function newTask(initial=false){
- if(!initial)S.taskNumber++;
- let offset;
- do{offset=(Math.random()-.5)*100}while(Math.abs(offset)<12);
- S.targetHeading=wrap360(S.heading+offset);
 
- const altOffset=(Math.random()<.5?-1:1)*(500+Math.random()*1000);
+ $('targetSpeed').innerHTML=
+  `${Math.round(S.targetSpeed)} <span>KT</span>`;
+
+ $('taskLine').textContent=
+  `TASK ${String(S.taskNumber).padStart(2,'0')} · HDG ${String(Math.round(S.targetHeading)).padStart(3,'0')}° · ALT ${Math.round(S.targetAltitude).toLocaleString('en-US')} FT`+
+  (config().speed?` · IAS ${Math.round(S.targetSpeed)} KT`:'');
+}
+
+/* NEW TASK */
+function newTask(initial=false){
+ const c=config();
+
+ if(!initial)S.taskNumber++;
+
+ const headingOffset=(Math.random()<.5?-1:1)*
+  (5+Math.random()*Math.max(0,c.heading-5));
+
+ S.targetHeading=wrap360(S.heading+headingOffset);
+
+ const altitudeOffset=(Math.random()<.5?-1:1)*
+  (200+Math.random()*Math.max(0,c.altitude-200));
+
  S.targetAltitude=clamp(
-  Math.round((S.altitude+altOffset)/100)*100,
+  Math.round((S.altitude+altitudeOffset)/100)*100,
   8000,16000
  );
+
+ if(c.speed){
+  const speedOffset=(Math.random()<.5?-1:1)*
+   (5+Math.random()*Math.max(0,c.speed-5));
+
+  S.targetSpeed=clamp(
+   Math.round((S.speed+speedOffset)/5)*5,
+   120,220
+  );
+ }else{
+  S.targetSpeed=170;
+ }
+
  S.taskClock=0;
- S.nextTaskAt=15+Math.random()*5;
+ S.nextTaskAt=c.interval;
  renderTargets();
 }
 
 /* SLIP TASK */
 function newSlipEvent(){
+ if(!config().slip){
+  S.slip=0;
+  S.slipComplete=false;
+  S.rudder=0;
+  S.slipClock=0;
+  S.nextSlipAt=999999;
+  return;
+ }
+
  const direction=Math.random()<.5?-1:1;
  S.slip=direction*(55+Math.random()*13);
  S.slipTarget=0;
  S.slipComplete=false;
+ S.rudder=0;
+
  S.slipClock=0;
- S.nextSlipAt=10+Math.random()*5;
+ S.nextSlipAt=6+Math.random();
 }
 
-/* AIRCRAFT DYNAMICS */
+/* PHYSICS */
 function physics(dt){
  keyboard();
 
- // Increased throttle response: stronger IAS acceleration.
+ // Throttle has a stronger effect on IAS.
  const throttleAcceleration=(S.throttle-50)*.18;
  const pitchAcceleration=-S.pitch*.12;
- const speedDamping=(170-S.speed)*.003;
+ const speedDamping=(S.targetSpeed-S.speed)*.003;
 
  S.speed=clamp(
   S.speed+(throttleAcceleration+pitchAcceleration+speedDamping)*dt,
@@ -566,6 +692,7 @@ function physics(dt){
 
  if(Math.abs(S.joyY)<.03)
   S.pitch*=Math.pow(.997,dt*60);
+
  if(Math.abs(S.joyX)<.03)
   S.bank*=Math.pow(.997,dt*60);
 
@@ -577,14 +704,15 @@ function physics(dt){
  // Pitch controls altitude.
  S.altitude=Math.max(0,S.altitude+S.pitch*180*dt/60);
 
- // Rudder moves slip ball; releasing rudder holds its position.
- if(!S.slipComplete&&S.rudder!==0){
+ // Slip ball movement is active only in Level 3.
+ if(config().slip&&!S.slipComplete&&S.rudder!==0){
   S.slip+=S.rudder*65*dt;
   S.slip=clamp(S.slip,-100,100);
 
-  // Completion occurs only when the ball is fully inside the guides.
+  // Ball must be fully inside the two guide lines.
   if(Math.abs(S.slip)<=50){
    S.slipComplete=true;
+   S.rudder=0;
   }
  }
 }
@@ -602,35 +730,42 @@ function updateFD(){
 function score(e,scale){
  return clamp(100*(1-Math.abs(e)/scale),0,100);
 }
+
 function scoreSample(){
+ const c=config();
+
  S.samples.push({
-  speed:score(S.speed-170,25),
+  speed:c.speed?score(S.speed-S.targetSpeed,25):null,
   altitude:score(S.altitude-S.targetAltitude,900),
   heading:score(angleDiff(S.heading,S.targetHeading),30),
-  slip:S.slipComplete?100:score(S.slip,100)
+  slip:c.slip?(S.slipComplete?100:score(S.slip,100)):null
  });
 }
+
 function avg(k){
- return S.samples.length
-  ?S.samples.reduce((a,x)=>a+x[k],0)/S.samples.length
-  :0;
+ const valid=S.samples.map(x=>x[k]).filter(v=>v!==null&&v!==undefined);
+ return valid.length?valid.reduce((a,x)=>a+x,0)/valid.length:0;
 }
 
 /* DISPLAY */
 function render(){
+ const c=config();
+
  $('pitchValue').textContent=Math.round(S.pitch)+'°';
  $('bankSide').textContent=Math.round(S.bank)+'°';
 
  $('horizon').style.transform=
   `translateY(${S.pitch*2.1}px) rotate(${-S.bank}deg)`;
+
  $('bankPointer').style.transform=`rotate(${S.bank}deg)`;
 
- // Map slip values to the indicator so ±50 is comfortably inside the two lines.
+ // Guide lines are at 35% and 65%.
+ // Ball center at 40%-60% is safely inside both guides.
  const slipPosition=50+S.slip*.20;
  $('slipBall').style.left=`${clamp(slipPosition,0,100)}%`;
  $('slipBall').classList.toggle('complete',S.slipComplete);
 
- renderVerticalTape('speedTape',S.speed,5,2,n=>Math.round(n),170);
+ renderVerticalTape('speedTape',S.speed,5,2,n=>Math.round(n),S.targetSpeed);
  $('speedPointer').textContent=Math.round(S.speed);
 
  renderVerticalTape('altTape',S.altitude,100,2,n=>Math.round(n),S.targetAltitude);
@@ -643,18 +778,25 @@ function render(){
  const altErr=Math.abs(S.altitude-S.targetAltitude);
 
  const values=[
-  ['iasError',Math.abs(S.speed-170),' kt',15],
-  ['altError',altErr,' ft',500],
-  ['hdgError',hdgErr,'°',15],
-  ['slipError',S.slipComplete?0:Math.abs(S.slip),'%',50]
+  ['iasError',Math.abs(S.speed-S.targetSpeed),' kt',15,!c.speed],
+  ['altError',altErr,' ft',500,false],
+  ['hdgError',hdgErr,'°',15,false],
+  ['slipError',S.slipComplete?0:Math.abs(S.slip),'%',50,!c.slip]
  ];
- values.forEach(([id,v,u,limit])=>{
-  $(id).textContent=Math.round(v)+u;
-  $(id).style.color=v>limit?'var(--red)':'var(--green)';
+
+ values.forEach(([id,v,u,limit,disabled])=>{
+  if(disabled){
+   $(id).textContent='—';
+   $(id).style.color='var(--muted)';
+  }else{
+   $(id).textContent=Math.round(v)+u;
+   $(id).style.color=v>limit?'var(--red)':'var(--green)';
+  }
  });
 
  $('nextTask').textContent=
-  `Next task in ${Math.max(0,Math.ceil(S.nextTaskAt-S.taskClock))} sec`;
+  `Next task in ${Math.max(0,Math.ceil(S.nextTaskAt-S.taskClock))} sec`+
+  (c.slip?` · Slip task in ${Math.max(0,Math.ceil(S.nextSlipAt-S.slipClock))} sec`:'');
 }
 
 /* TIMER */
@@ -672,20 +814,31 @@ function finish(){
  setJoy(0,0);
  S.rudder=0;
 
- const a=avg('speed');
- const b=avg('altitude');
- const c=avg('heading');
- const d=avg('slip');
+ const c=config();
+ const scores={
+  speed:c.speed?avg('speed'):null,
+  altitude:avg('altitude'),
+  heading:avg('heading'),
+  slip:c.slip?avg('slip'):null
+ };
 
- $('scoreSpeed').textContent=Math.round(a)+'%';
- $('scoreAlt').textContent=Math.round(b)+'%';
- $('scoreHeading').textContent=Math.round(c)+'%';
- $('scoreSlip').textContent=Math.round(d)+'%';
- $('finalScore').textContent=Math.round((a+b+c+d)/4)+'%';
+ $('scoreSpeed').textContent=scores.speed===null?'N/A':Math.round(scores.speed)+'%';
+ $('scoreAlt').textContent=Math.round(scores.altitude)+'%';
+ $('scoreHeading').textContent=Math.round(scores.heading)+'%';
+ $('scoreSlip').textContent=scores.slip===null?'N/A':Math.round(scores.slip)+'%';
+
+ const activeScores=[scores.altitude,scores.heading];
+ if(scores.speed!==null)activeScores.push(scores.speed);
+ if(scores.slip!==null)activeScores.push(scores.slip);
+
+ $('finalScore').textContent=
+  Math.round(activeScores.reduce((x,y)=>x+y,0)/activeScores.length)+'%';
+
  $('results').style.display='block';
  $('status').textContent='TEST COMPLETED';
  $('startBtn').textContent='TEST AGAIN';
  $('startBtn').disabled=false;
+ updateLevelUI();
 
  $('results').scrollIntoView({behavior:'smooth',block:'nearest'});
 }
@@ -693,18 +846,21 @@ function finish(){
 /* MAIN LOOP */
 function loop(t){
  if(!S.running)return;
+
  const dt=Math.min((t-S.lastTime)/1000,.05);
  S.lastTime=t;
 
  physics(dt);
+
  S.remaining-=dt;
  S.elapsed+=dt;
  S.taskClock+=dt;
  S.sampleClock+=dt;
- S.slipClock+=dt;
+
+ if(config().slip)S.slipClock+=dt;
 
  if(S.taskClock>=S.nextTaskAt)newTask();
- if(S.slipClock>=S.nextSlipAt)newSlipEvent();
+ if(config().slip&&S.slipClock>=S.nextSlipAt)newSlipEvent();
 
  if(S.sampleClock>=.2){
   scoreSample();
@@ -720,12 +876,14 @@ function loop(t){
   finish();
   return;
  }
+
  raf=requestAnimationFrame(loop);
 }
 
 /* START */
 function start(){
  if(S.running)return;
+
  $('intro').classList.add('hidden');
  $('results').style.display='none';
 
@@ -743,6 +901,8 @@ function start(){
  $('status').textContent='TEST IN PROGRESS';
  $('startBtn').textContent='TEST RUNNING';
  $('startBtn').disabled=true;
+
+ updateLevelUI();
  raf=requestAnimationFrame(loop);
 }
 
@@ -755,32 +915,41 @@ function reset(){
   speed:170,altitude:12000,heading:0,pitch:0,bank:0,
   slip:0,slipTarget:0,slipComplete:false,
   joyX:0,joyY:0,rudder:0,throttle:50,
-  targetAltitude:12000,targetHeading:0,
+  targetSpeed:170,targetAltitude:12000,targetHeading:0,
   remaining:120,elapsed:0,sampleClock:0,taskClock:0,
-  slipClock:0,nextSlipAt:12,nextTaskAt:17,
+  slipClock:0,nextSlipAt:999999,nextTaskAt:15,
   taskNumber:1,samples:[]
  });
 
  setJoy(0,0);
  updateThrottleDisplay();
+
  $('results').style.display='none';
  $('startBtn').disabled=false;
  $('startBtn').textContent='START TEST';
  $('status').textContent='READY · TRAINING MODE';
- renderTargets();
+
+ newTask(true);
+ newSlipEvent();
+ updateLevelUI();
  timer();
  render();
 }
 
+/* BUTTONS */
 $('startBtn').addEventListener('click',start);
 $('introStart').addEventListener('click',start);
 $('resetBtn').addEventListener('click',reset);
+
 window.addEventListener('resize',render);
 
 updateThrottleDisplay();
-renderTargets();
+updateLevelUI();
+newTask(true);
+newSlipEvent();
 timer();
 render();
+
 })();
 </script>
 </body>
