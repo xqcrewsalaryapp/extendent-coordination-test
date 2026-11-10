@@ -160,7 +160,24 @@ button{font:inherit;color:inherit}
  .throttle-control{height:190px}
  .throttle-track,.throttle-scale{height:170px}
 }
+.analysis-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;margin-top:10px}
+.analysis-tile{background:#091321;border:1px solid #293b53;border-radius:8px;padding:9px}
+.analysis-tile small{display:block;color:var(--muted);font-size:9px;margin-bottom:5px}
+.analysis-tile strong{font-size:16px;font-variant-numeric:tabular-nums}
+.chart-wrap{margin-top:12px;background:#091321;border:1px solid #293b53;border-radius:8px;padding:9px}
+.chart-title{font-size:10px;color:var(--muted);letter-spacing:.7px;margin-bottom:7px}
+#performanceChart{width:100%;height:150px;display:block}
+.history-list{margin-top:8px;max-height:180px;overflow:auto}
+.history-item{display:flex;justify-content:space-between;gap:8px;padding:7px 2px;border-bottom:1px solid #293a50;font-size:10px}
+.history-item span{color:var(--muted)}
+.adaptive-toggle{width:100%;margin:0!important;padding:12px!important;text-align:left;background:#0b1625!important;border:1px solid #344b66!important;border-radius:10px!important}
+.adaptive-toggle.active{border:2px solid var(--amber)!important;background:#2a2618!important;padding:11px!important}
 </style>
+<link rel="manifest" href="./manifest.json">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Coordination Test">
+<link rel="apple-touch-icon" href="./icons/icon-192.png">
 </head>
 <body>
 <div class="app">
@@ -214,7 +231,6 @@ button{font:inherit;color:inherit}
    <div class="tape-caption">FEET</div><div class="side-label">PITCH</div><div class="side-value" id="pitchValue">0°</div><div class="side-label">BANK</div><div class="side-value" id="bankSide">0°</div>
   </div>
  </div>
-
  <div class="controls-row">
   <div class="throttle-panel">
    <div class="throttle-head"><span>THROTTLE</span><strong id="throttleValue">50%</strong></div>
@@ -231,7 +247,6 @@ button{font:inherit;color:inherit}
    <div class="instructions">UP: NOSE DOWN<br>DOWN: NOSE UP<br>LEFT / RIGHT: BANK</div>
   </div>
  </div>
-
  <div class="control-area">
   <div class="control-card">
    <div class="control-heading">FLIGHT PARAMETERS</div>
@@ -252,9 +267,20 @@ button{font:inherit;color:inherit}
   <div class="score-row"><span>Yaw / slip coordination</span><strong id="scoreSlip">N/A</strong></div>
   <div class="final-score" id="finalScore">0%</div>
   <div class="result-note">Training score · Not an official SkyTest score</div>
+  <div class="analysis-grid">
+   <div class="analysis-tile"><small>AVG. REACTION TIME</small><strong id="reactionResult">—</strong></div>
+   <div class="analysis-tile"><small>OVERSHOOTS</small><strong id="overshootResult">0</strong></div>
+   <div class="analysis-tile"><small>AVG. STABILIZATION</small><strong id="stabilityResult">—</strong></div>
+   <div class="analysis-tile"><small>CONTROL OSCILLATIONS</small><strong id="oscillationResult">0</strong></div>
+  </div>
+  <div class="chart-wrap">
+   <div class="chart-title">PARAMETER PERFORMANCE OVER TIME</div>
+   <canvas id="performanceChart" width="640" height="240"></canvas>
+  </div>
+  <div class="control-heading" style="margin-top:14px">RECENT TEST HISTORY</div>
+  <div class="history-list" id="historyList"></div>
  </div>
 </div>
-
 <div class="overlay" id="intro">
  <div class="overlay-card level-select-card">
   <div class="menu-kicker">TRAINING SIMULATOR</div>
@@ -265,12 +291,15 @@ button{font:inherit;color:inherit}
    <button class="menu-level" data-level="2" type="button"><span class="menu-level-top"><b>LEVEL 2</b><span>INTERMEDIATE</span></span><strong>ALT + HDG + IAS</strong><small>Altitude, heading and airspeed · New targets every 15 seconds</small><small>Heading ±30° · Altitude ±1,200 ft · Speed ±20 kt</small></button>
    <button class="menu-level" data-level="3" type="button"><span class="menu-level-top"><b>LEVEL 3</b><span>ADVANCED</span></span><strong>FULL COORDINATION</strong><small>Altitude, heading, airspeed and slip · Slip task every 6–7 seconds</small><small>Heading ±45° · Altitude ±1,500 ft · Speed ±25 kt</small></button>
   </div>
+  <button class="adaptive-toggle" id="adaptiveToggle" type="button">
+   <span class="menu-level-top"><b>ADAPTIVE MODE</b><span>SMART DIFFICULTY</span></span>
+   <small>Difficulty adjusts gradually according to your recent performance. Starts at Level 2.</small>
+  </button>
   <div class="menu-selection">Selected: <b id="introLevel">Level 1</b><span id="introDescription">Altitude and heading coordination</span></div>
   <p class="menu-duration"><b>Test duration:</b> 2 minutes</p>
   <button id="introStart">START TEST</button>
  </div>
 </div>
-
 <script>
 (()=>{
 const $=id=>document.getElementById(id);
@@ -280,15 +309,13 @@ const $=id=>document.getElementById(id);
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
 const wrap360=v=>((v%360)+360)%360;
 const angleDiff=(a,b)=>((a-b+540)%360)-180;
-
 const LEVELS={
  1:{heading:20,altitude:1000,speed:0,interval:15,slip:false,description:"Altitude and heading coordination"},
  2:{heading:30,altitude:1200,speed:20,interval:15,slip:false,description:"Altitude, heading and airspeed coordination"},
  3:{heading:45,altitude:1500,speed:25,interval:15,slip:true,description:"Full coordination: altitude, heading, airspeed and slip"}
 };
-
 const S={
- level:1,
+ level:1,adaptive:false,adaptiveIntensity:1,adaptiveRecent:[],
  speed:170,altitude:12000,heading:0,pitch:0,bank:0,
  slip:0,slipTarget:0,slipComplete:false,
  joyX:0,joyY:0,rudder:0,throttle:50,
@@ -296,34 +323,41 @@ const S={
  running:false,remaining:120,elapsed:0,lastTime:0,
  sampleClock:0,taskClock:0,nextTaskAt:15,
  slipClock:0,nextSlipAt:999999,
- taskNumber:1,samples:[]
+ taskNumber:1,samples:[],
+ metrics:{reaction:[],overshoots:0,stabilization:[],oscillations:0},
+ taskTrack:null,previousErrors:null,stableClock:0,wasStable:false,
+ chartSamples:[]
 };
-
 let raf=null,joyPointer=null,throttlePointer=null;
 const joystick=$('joystick');
 const knob=$('joyKnob');
-
 function config(){return LEVELS[S.level]}
-
 function updateLevelUI(){
  const c=config();
+ $('adaptiveToggle').classList.toggle('active',S.adaptive);
+ $('adaptiveToggle').querySelector('b').textContent=S.adaptive?'ADAPTIVE MODE · ON':'ADAPTIVE MODE';
  document.querySelectorAll('.menu-level').forEach(btn=>{
   btn.classList.toggle('active',Number(btn.dataset.level)===S.level);
  });
  $('introLevel').textContent='Level '+S.level;
  $('introDescription').textContent=c.description;
 }
-
 document.querySelectorAll('.menu-level').forEach(btn=>{
  btn.addEventListener('click',()=>{
   if(S.running)return;
   S.level=Number(btn.dataset.level);
+  S.adaptive=false;S.adaptiveIntensity=1;S.adaptiveRecent=[];
   updateLevelUI();
   reset();
   $('intro').classList.remove('hidden');
  });
 });
-
+$('adaptiveToggle').addEventListener('click',()=>{
+ if(S.running)return;
+ S.adaptive=!S.adaptive;
+ if(S.adaptive){S.level=2;S.adaptiveIntensity=1;S.adaptiveRecent=[];}
+ updateLevelUI();reset();$('intro').classList.remove('hidden');
+});
 function setJoy(x,y){
  S.joyX=clamp(x,-1,1);S.joyY=clamp(y,-1,1);
  knob.style.left=`calc(50% + ${S.joyX*42}px)`;
@@ -356,7 +390,6 @@ joystick.addEventListener('pointercancel',releaseJoy);
 joystick.addEventListener('lostpointercapture',()=>{
  joyPointer=null;setJoy(0,0);
 });
-
 /* Independent throttle pointer: works at the same time as joystick touch. */
 const throttleTrack=document.querySelector('.throttle-track');
 function setThrottleFromPointer(e){
@@ -382,14 +415,12 @@ function releaseThrottle(e){
 throttleTrack.addEventListener('pointerup',releaseThrottle);
 throttleTrack.addEventListener('pointercancel',releaseThrottle);
 throttleTrack.addEventListener('lostpointercapture',releaseThrottle);
-
 function updateThrottleDisplay(){
  const value=Math.round(S.throttle);
  $('throttle').value=value;
  $('throttleValue').textContent=value+'%';
  $('throttleSide').textContent=value+'%';
 }
-
 function bindHold(id,callback){
  const el=$(id);
  el.addEventListener('pointerdown',e=>{
@@ -412,14 +443,12 @@ bindHold('rudderLeft',v=>{
 bindHold('rudderRight',v=>{
  if(v)S.rudder=1;else if(S.rudder===1)S.rudder=0;
 });
-
 const keys={};
 window.addEventListener('keydown',e=>{
  keys[e.key.toLowerCase()]=true;
  if(e.key.startsWith('Arrow'))e.preventDefault();
 });
 window.addEventListener('keyup',e=>{keys[e.key.toLowerCase()]=false});
-
 function keyboard(){
  if(keys.arrowup)S.throttle=clamp(S.throttle+.8,0,100);
  if(keys.arrowdown)S.throttle=clamp(S.throttle-.8,0,100);
@@ -434,7 +463,6 @@ function keyboard(){
   S.joyY=(keys.arrowdown?1:0)-(keys.arrowup?1:0);
  }
 }
-
 function renderVerticalTape(containerId,value,step,majorEvery,format,target){
  const el=$(containerId),height=el.clientHeight,center=height/2;
  const pixelsPerUnit=step===5?3.2:.055;
@@ -450,7 +478,6 @@ function renderVerticalTape(containerId,value,step,majorEvery,format,target){
  if(targetY>=0&&targetY<=height)html+=`<div class="tape-target" style="top:${targetY}px"></div>`;
  el.innerHTML=html;
 }
-
 function renderHeadingTape(){
  const el=$('headingScale'),width=el.clientWidth,center=width/2,px=2.1;
  let html='';
@@ -463,7 +490,6 @@ function renderHeadingTape(){
  if(targetX>=0&&targetX<=width)html+=`<div class="heading-target" style="left:${targetX}px"></div>`;
  el.innerHTML=html;
 }
-
 function renderTargets(){
  $('targetAltitude').innerHTML=`${Math.round(S.targetAltitude).toLocaleString('en-US')} <span>FT</span>`;
  $('targetHeading').textContent=String(Math.round(S.targetHeading)).padStart(3,'0')+'°';
@@ -472,22 +498,41 @@ function renderTargets(){
   `TASK ${String(S.taskNumber).padStart(2,'0')} · HDG ${String(Math.round(S.targetHeading)).padStart(3,'0')}° · ALT ${Math.round(S.targetAltitude).toLocaleString('en-US')} FT`+
   (config().speed?` · IAS ${Math.round(S.targetSpeed)} KT`:'');
 }
-
 function newTask(initial=false){
  const c=config();
  if(!initial)S.taskNumber++;
- const headingOffset=(Math.random()<.5?-1:1)*(5+Math.random()*Math.max(0,c.heading-5));
+ const intensity=S.adaptive?S.adaptiveIntensity:1;
+ const headingLimit=c.heading*intensity;
+ const altitudeLimit=c.altitude*intensity;
+ const speedLimit=c.speed*intensity;
+ const headingOffset=(Math.random()<.5?-1:1)*(5+Math.random()*Math.max(0,headingLimit-5));
  S.targetHeading=wrap360(S.heading+headingOffset);
- const altitudeOffset=(Math.random()<.5?-1:1)*(200+Math.random()*Math.max(0,c.altitude-200));
+ const altitudeOffset=(Math.random()<.5?-1:1)*(200+Math.random()*Math.max(0,altitudeLimit-200));
  S.targetAltitude=clamp(Math.round((S.altitude+altitudeOffset)/100)*100,8000,16000);
  if(c.speed){
-  const speedOffset=(Math.random()<.5?-1:1)*(5+Math.random()*Math.max(0,c.speed-5));
+  const speedOffset=(Math.random()<.5?-1:1)*(5+Math.random()*Math.max(0,speedLimit-5));
   S.targetSpeed=clamp(Math.round((S.speed+speedOffset)/5)*5,120,220);
  }else S.targetSpeed=170;
  S.taskClock=0;S.nextTaskAt=c.interval;
+ S.taskTrack={
+  startedAt:S.elapsed,reacted:false,stableAt:null,
+  sampleStart:S.samples.length,
+  initialErrors:{
+   heading:angleDiff(S.targetHeading,S.heading),
+   altitude:S.targetAltitude-S.altitude,
+   speed:S.targetSpeed-S.speed
+  },
+  crossed:{heading:false,altitude:false,speed:false},
+  previous:{
+   heading:angleDiff(S.targetHeading,S.heading),
+   altitude:S.targetAltitude-S.altitude,
+   speed:S.targetSpeed-S.speed
+  },
+  best:{heading:Math.abs(angleDiff(S.targetHeading,S.heading)),altitude:Math.abs(S.targetAltitude-S.altitude),speed:Math.abs(S.targetSpeed-S.speed)}
+ };
+ S.wasStable=false;S.stableClock=0;
  renderTargets();
 }
-
 function newSlipEvent(){
  if(!config().slip){
   S.slip=0;S.slipComplete=false;S.rudder=0;
@@ -498,7 +543,6 @@ function newSlipEvent(){
  S.slipTarget=0;S.slipComplete=false;S.rudder=0;
  S.slipClock=0;S.nextSlipAt=6+Math.random();
 }
-
 function physics(dt){
  keyboard();
  if(S.level===1){
@@ -520,28 +564,130 @@ function physics(dt){
   if(Math.abs(S.slip)<=50){S.slipComplete=true;S.rudder=0}
  }
 }
-
 function updateFD(){
  const hdgError=angleDiff(S.targetHeading,S.heading),altError=S.targetAltitude-S.altitude;
  const x=clamp(hdgError*1.05,-55,55),y=clamp(-altError*.045,-48,48);
  $('fdCommand').style.transform=`translate(${x}px,${y}px)`;
 }
-
 function score(e,scale){return clamp(100*(1-Math.abs(e)/scale),0,100)}
+function taskErrors(){
+ return {
+  heading:angleDiff(S.heading,S.targetHeading),
+  altitude:S.altitude-S.targetAltitude,
+  speed:S.speed-S.targetSpeed
+ };
+}
+function taskStable(){
+ const c=config(),e=taskErrors();
+ return Math.abs(e.heading)<=3 && Math.abs(e.altitude)<=150 &&
+  (!c.speed || Math.abs(e.speed)<=5);
+}
+function trackTaskMetrics(){
+ if(!S.taskTrack)return;
+ const tr=S.taskTrack,c=config(),e=taskErrors();
+ const active=['heading','altitude'];
+ if(c.speed)active.push('speed');
+ let improved=false,allNear=true;
+ active.forEach(k=>{
+  const prev=tr.previous[k],now=e[k];
+  if(Math.abs(now)<Math.abs(prev)-.35)improved=true;
+  if(Math.abs(now)>tr.best[k]+1 && Math.abs(prev)<=tr.best[k]+1 && !tr.crossed[k]){
+   if(prev*now<0 && Math.abs(prev)<Math.max(8,k==='altitude'?350:12)){
+    tr.crossed[k]=true;S.metrics.overshoots++;
+   }
+  }
+  tr.best[k]=Math.min(tr.best[k],Math.abs(now));
+  if(Math.abs(now)>(k==='heading'?3:k==='altitude'?150:5))allNear=false;
+  tr.previous[k]=now;
+ });
+ if(!tr.reacted && improved){
+  tr.reacted=true;
+  S.metrics.reaction.push(Math.max(0,S.elapsed-tr.startedAt));
+ }
+ if(allNear){
+  S.stableClock+=.2;
+  if(!S.wasStable && S.stableClock>=1){
+   S.wasStable=true;
+   tr.stableAt=S.elapsed;
+   S.metrics.stabilization.push(Math.max(0,S.elapsed-tr.startedAt));
+  }
+ }else{
+  if(S.wasStable)S.metrics.oscillations++;
+  S.wasStable=false;S.stableClock=0;
+ }
+}
+function drawPerformanceChart(){
+ const canvas=$('performanceChart');if(!canvas)return;
+ const ctx=canvas.getContext('2d'),w=canvas.width,h=canvas.height;
+ ctx.clearRect(0,0,w,h);
+ ctx.strokeStyle='#34465f';ctx.lineWidth=1;
+ for(let i=0;i<=4;i++){
+  const y=12+i*(h-32)/4;ctx.beginPath();ctx.moveTo(36,y);ctx.lineTo(w-8,y);ctx.stroke();
+ }
+ const series=[
+  ['heading','#52d8ed'],['altitude','#54df9b'],['speed','#f5d15a'],['slip','#ed39df']
+ ].filter(([k])=>S.chartSamples.some(x=>x[k]!==null));
+ const colors={heading:'#52d8ed',altitude:'#54df9b',speed:'#f5d15a',slip:'#ed39df'};
+ series.forEach(([key])=>{
+  ctx.strokeStyle=colors[key];ctx.lineWidth=2;ctx.beginPath();
+  let started=false;
+  S.chartSamples.forEach((sample,i)=>{
+   if(sample[key]===null)return;
+   const x=36+(i/Math.max(1,S.chartSamples.length-1))*(w-48);
+   const y=12+(100-sample[key])*(h-32)/100;
+   if(!started){ctx.moveTo(x,y);started=true}else ctx.lineTo(x,y);
+  });
+  if(started)ctx.stroke();
+ });
+ ctx.fillStyle='#aebed0';ctx.font='11px Arial';
+ ctx.fillText('100%',3,17);ctx.fillText('50%',7,h/2);ctx.fillText('0%',12,h-18);
+ ctx.fillStyle='#52d8ed';ctx.fillText('HDG',42,h-3);
+ let x=92;
+ series.slice(1).forEach(([key])=>{ctx.fillStyle=colors[key];ctx.fillText(key.toUpperCase(),x,h-3);x+=76;});
+}
+function loadHistory(){
+ let history=[];
+ try{history=JSON.parse(localStorage.getItem('ectHistory')||'[]')}catch(e){}
+ return Array.isArray(history)?history:[];
+}
+function renderHistory(){
+ const list=$('historyList');if(!list)return;
+ const history=loadHistory();
+ list.innerHTML=history.length?history.slice(0,8).map(item=>
+  `<div class="history-item"><span>${item.date} · ${item.mode}</span><strong>${item.score}%</strong></div>`
+ ).join(''):'<div class="instructions">No previous tests stored on this device.</div>';
+}
+function saveHistory(scoreValue){
+ const history=loadHistory();
+ history.unshift({date:new Date().toLocaleString(),mode:S.adaptive?'Adaptive':'Level '+S.level,score:Math.round(scoreValue)});
+ try{localStorage.setItem('ectHistory',JSON.stringify(history.slice(0,20)))}catch(e){}
+ renderHistory();
+}
+function adaptDifficulty(scoreValue){
+ if(!S.adaptive)return;
+ S.adaptiveRecent.push(scoreValue);S.adaptiveRecent=S.adaptiveRecent.slice(-3);
+ if(S.adaptiveRecent.length<3)return;
+ const mean=S.adaptiveRecent.reduce((a,b)=>a+b,0)/S.adaptiveRecent.length;
+ if(mean>=85)S.adaptiveIntensity=clamp(S.adaptiveIntensity+.08,.75,1.35);
+ else if(mean<60)S.adaptiveIntensity=clamp(S.adaptiveIntensity-.08,.75,1.35);
+}
 function scoreSample(){
  const c=config();
  S.samples.push({
   speed:c.speed?score(S.speed-S.targetSpeed,25):null,
   altitude:score(S.altitude-S.targetAltitude,900),
-  heading:score(angleDiff(S.heading,S.targetHeading),30),
+  heading:score(angleDiff(S.heading-S.targetHeading,0),30),
   slip:c.slip?(S.slipComplete?100:score(S.slip,100)):null
  });
+ const sample=S.samples[S.samples.length-1];
+ S.chartSamples.push(sample);
+ if(S.chartSamples.length>600)S.chartSamples.shift();
+ trackTaskMetrics();
 }
 function avg(k){
  const valid=S.samples.map(x=>x[k]).filter(v=>v!==null&&v!==undefined);
  return valid.length?valid.reduce((a,x)=>a+x,0)/valid.length:0;
 }
-
 function render(){
  const c=config();
  $('pitchValue').textContent=Math.round(S.pitch)+'°';
@@ -577,12 +723,10 @@ function render(){
   `Next task in ${Math.max(0,Math.ceil(S.nextTaskAt-S.taskClock))} sec`+
   (c.slip?` · Slip task in ${Math.max(0,Math.ceil(S.nextSlipAt-S.slipClock))} sec`:'');
 }
-
 function timer(){
  const s=Math.ceil(S.remaining);
  $('timer').textContent=String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0');
 }
-
 function finish(){
  S.running=false;cancelAnimationFrame(raf);setJoy(0,0);S.rudder=0;
  const c=config();
@@ -598,40 +742,51 @@ function finish(){
  const activeScores=[scores.altitude,scores.heading];
  if(scores.speed!==null)activeScores.push(scores.speed);
  if(scores.slip!==null)activeScores.push(scores.slip);
- $('finalScore').textContent=Math.round(activeScores.reduce((x,y)=>x+y,0)/activeScores.length)+'%';
+ const finalValue=activeScores.reduce((x,y)=>x+y,0)/activeScores.length;
+ $('finalScore').textContent=Math.round(finalValue)+'%';
+ $('reactionResult').textContent=S.metrics.reaction.length?(S.metrics.reaction.reduce((a,b)=>a+b,0)/S.metrics.reaction.length).toFixed(2)+' s':'No response';
+ $('overshootResult').textContent=S.metrics.overshoots;
+ $('stabilityResult').textContent=S.metrics.stabilization.length?(S.metrics.stabilization.reduce((a,b)=>a+b,0)/S.metrics.stabilization.length).toFixed(1)+' s':'—';
+ $('oscillationResult').textContent=S.metrics.oscillations;
+ saveHistory(finalValue);drawPerformanceChart();
  $('results').style.display='block';
  $('status').textContent='TEST COMPLETED';
  $('startBtn').textContent='TEST AGAIN';
  $('startBtn').disabled=false;
  $('results').scrollIntoView({behavior:'smooth',block:'nearest'});
 }
-
 function loop(t){
  if(!S.running)return;
  const dt=Math.min((t-S.lastTime)/1000,.05);S.lastTime=t;
  physics(dt);
  S.remaining-=dt;S.elapsed+=dt;S.taskClock+=dt;S.sampleClock+=dt;
  if(config().slip)S.slipClock+=dt;
- if(S.taskClock>=S.nextTaskAt)newTask();
+ if(S.taskClock>=S.nextTaskAt){
+  const taskSamples=S.samples.slice(S.taskTrack?S.taskTrack.sampleStart:0);
+  const taskAvg=k=>{const a=taskSamples.map(x=>x[k]).filter(v=>v!==null&&v!==undefined);return a.length?a.reduce((m,v)=>m+v,0)/a.length:50};
+  const taskScore=(taskAvg('heading')+taskAvg('altitude')+(config().speed?taskAvg('speed'):0)+(config().slip?taskAvg('slip'):0))/(2+(config().speed?1:0)+(config().slip?1:0));
+  adaptDifficulty(taskScore);
+  newTask();
+ }
  if(config().slip&&S.slipClock>=S.nextSlipAt)newSlipEvent();
  if(S.sampleClock>=.2){scoreSample();S.sampleClock=0}
  timer();render();
  if(S.remaining<=0){S.remaining=0;timer();finish();return}
  raf=requestAnimationFrame(loop);
 }
-
 function start(){
  if(S.running)return;
  $('intro').classList.add('hidden');
  $('results').style.display='none';
  S.running=true;S.remaining=120;S.elapsed=0;
- S.lastTime=performance.now();S.sampleClock=0;S.samples=[];S.taskNumber=1;
+ S.lastTime=performance.now();S.sampleClock=0;S.samples=[];S.chartSamples=[];
+ S.metrics={reaction:[],overshoots:0,stabilization:[],oscillations:0};
+ S.taskNumber=1;S.taskTrack=null;S.previousErrors=null;S.stableClock=0;S.wasStable=false;
  newTask(true);newSlipEvent();
  $('status').textContent='TEST IN PROGRESS';
  $('startBtn').textContent='TEST RUNNING';$('startBtn').disabled=true;
  raf=requestAnimationFrame(loop);
 }
-
 function reset(){
  S.running=false;if(raf)cancelAnimationFrame(raf);
  throttlePointer=null;joyPointer=null;
@@ -642,21 +797,30 @@ function reset(){
   targetSpeed:170,targetAltitude:12000,targetHeading:0,
   remaining:120,elapsed:0,sampleClock:0,taskClock:0,
   slipClock:0,nextSlipAt:999999,nextTaskAt:15,
-  taskNumber:1,samples:[]
+  taskNumber:1,samples:[],metrics:{reaction:[],overshoots:0,stabilization:[],oscillations:0},
+  taskTrack:null,previousErrors:null,stableClock:0,wasStable:false,chartSamples:[]
  });
+ if(S.adaptive){S.level=2;S.adaptiveIntensity=1;S.adaptiveRecent=[];}
  setJoy(0,0);updateThrottleDisplay();
  $('results').style.display='none';
  $('startBtn').disabled=false;$('startBtn').textContent='START TEST';
  $('status').textContent='READY · TRAINING MODE';
  newTask(true);newSlipEvent();updateLevelUI();timer();render();
 }
-
 $('startBtn').addEventListener('click',start);
 $('introStart').addEventListener('click',start);
 $('resetBtn').addEventListener('click',reset);
 window.addEventListener('resize',render);
-updateThrottleDisplay();updateLevelUI();newTask(true);newSlipEvent();timer();render();
+updateThrottleDisplay();updateLevelUI();newTask(true);newSlipEvent();timer();render();renderHistory();
 })();
+</script>
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./sw.js', {scope: './'})
+      .catch(err => console.error('Offline setup failed:', err));
+  });
+}
 </script>
 </body>
 </html>
