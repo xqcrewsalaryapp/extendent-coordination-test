@@ -116,33 +116,26 @@ button{font:inherit;color:inherit}
 .results h2{margin:0 0 10px;font-size:18px}
 .final-score{text-align:center;font-size:34px;font-weight:bold;margin:13px 0 5px;color:var(--green)}
 .result-note{text-align:center;color:var(--muted);font-size:11px}
-.overlay{position:fixed;inset:0;z-index:20;display:flex;align-items:center;justify-content:center;background:#050a12ed;padding:20px;overflow:auto}
-.overlay-card{width:100%;max-width:460px;background:#142135;border:1px solid #405875;border-radius:15px;padding:20px;text-align:left;max-height:94vh;overflow:auto}
-.overlay-card h1{font-size:22px;margin:0 0 8px;text-align:center}
-.overlay-card p{color:#b2c0d2;font-size:12px;line-height:1.5;text-align:center}
-.overlay-card button{padding:12px;border:0;border-radius:8px;font-weight:bold}
-.primary{background:#176eaa}
-.secondary{background:#26374d}
-.menu-kicker{font-size:10px;letter-spacing:2px;color:var(--cyan);font-weight:bold;text-align:center}
-.settings-row{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 0;border-bottom:1px solid #30435b}
-.settings-name{font-size:12px;font-weight:bold}
-.settings-sub{font-size:9px;color:var(--muted);margin-top:3px}
-.settings-check{width:20px;height:20px;accent-color:var(--cyan)}
-.slider-wrap{padding:7px 0 12px;border-bottom:1px solid #30435b}
-.slider-head{display:flex;justify-content:space-between;align-items:center;font-size:10px;color:#b9c9dc;margin-bottom:5px}
-.slider-head strong{color:var(--cyan);font-size:12px}
-.deviation-slider{width:100%;accent-color:var(--cyan);height:20px}
-.settings-note{font-size:9px;color:var(--muted);line-height:1.5;text-align:center;margin:10px 0}
-.analysis-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;margin-top:10px}
-.analysis-tile{background:#091321;border:1px solid #293b53;border-radius:8px;padding:9px}
-.analysis-tile small{display:block;color:var(--muted);font-size:9px;margin-bottom:5px}
-.analysis-tile strong{font-size:16px;font-variant-numeric:tabular-nums}
-.chart-wrap{margin-top:12px;background:#091321;border:1px solid #293b53;border-radius:8px;padding:9px}
-.chart-title{font-size:10px;color:var(--muted);letter-spacing:.7px;margin-bottom:7px}
-#performanceChart{width:100%;height:150px;display:block}
-.history-list{margin-top:8px;max-height:180px;overflow:auto}
-.history-item{display:flex;justify-content:space-between;gap:8px;padding:7px 2px;border-bottom:1px solid #293a50;font-size:10px}
-.history-item span{color:var(--muted)}
+.menu-kicker{font-size:10px;letter-spacing:2px;color:var(--cyan);font-weight:bold;margin-bottom:10px}
+.level-select-card{max-width:480px;max-height:94vh;overflow-y:auto;text-align:left}
+.level-select-card h1{text-align:center;font-size:23px}
+.menu-intro{text-align:center;margin:0 0 15px}
+.menu-levels{display:grid;gap:9px;margin-top:12px}
+.menu-level{width:100%;margin:0!important;padding:12px!important;text-align:left;background:#0b1625!important;border:1px solid #344b66!important;border-radius:10px!important;cursor:pointer}
+.menu-level.active{border:2px solid var(--cyan)!important;background:#142b40!important;padding:11px!important;box-shadow:0 0 0 1px #52d8ed22}
+.menu-level-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.menu-level-top b{font-size:13px;color:#fff;letter-spacing:.6px}
+.menu-level-top span{font-size:8px;color:var(--cyan);letter-spacing:1px}
+.menu-level>strong{display:block;font-size:11px;color:var(--amber);margin-bottom:6px}
+.menu-level small{display:block;color:#aebed0;font-size:9px;line-height:1.5;margin-top:3px}
+.menu-selection{display:flex;flex-direction:column;gap:4px;text-align:center;margin-top:14px;color:#9fb0c4;font-size:10px}
+.menu-selection b{color:#fff;font-size:13px}
+.menu-duration{text-align:center;margin:10px 0 0!important;font-size:11px!important}
+.overlay{position:fixed;inset:0;z-index:20;display:flex;align-items:center;justify-content:center;background:#050a12ed;padding:20px}
+.overlay-card{width:100%;max-width:420px;background:#142135;border:1px solid #405875;border-radius:15px;padding:22px;text-align:center}
+.overlay-card h1{font-size:22px;margin:0 0 10px}
+.overlay-card p{color:#b2c0d2;font-size:13px;line-height:1.6}
+.overlay-card button{width:100%;margin-top:12px;padding:14px;background:#1676b7;border:0;border-radius:8px;font-weight:bold}
 .hidden{display:none!important}
 @media(max-width:370px){
  body{padding:5px}
@@ -167,7 +160,34 @@ button{font:inherit;color:inherit}
  .throttle-control{height:190px}
  .throttle-track,.throttle-scale{height:170px}
 }
+.analysis-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;margin-top:10px}
+.analysis-tile{background:#091321;border:1px solid #293b53;border-radius:8px;padding:9px}
+.analysis-tile small{display:block;color:var(--muted);font-size:9px;margin-bottom:5px}
+.analysis-tile strong{font-size:16px;font-variant-numeric:tabular-nums}
+.chart-wrap{margin-top:12px;background:#091321;border:1px solid #293b53;border-radius:8px;padding:9px}
+.chart-title{font-size:10px;color:var(--muted);letter-spacing:.7px;margin-bottom:7px}
+#performanceChart{width:100%;height:150px;display:block}
+.history-list{margin-top:8px;max-height:180px;overflow:auto}
+.history-item{display:flex;justify-content:space-between;gap:8px;padding:7px 2px;border-bottom:1px solid #293a50;font-size:10px}
+.history-item span{color:var(--muted)}
+.settings-panel{margin-top:12px;padding:11px;background:#0b1625;border:1px solid #344b66;border-radius:10px}
+.settings-title{font-size:11px;font-weight:bold;letter-spacing:1px;color:var(--cyan);margin-bottom:9px}
+.param-select{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
+.param-option{display:flex;align-items:center;gap:7px;padding:9px;background:#142237;border:1px solid #344b66;border-radius:7px;font-size:11px}
+.param-option input{accent-color:var(--cyan);width:16px;height:16px;margin:0}
+.deviation-list{display:grid;gap:10px;margin-top:12px}
+.deviation-row{padding:8px;background:#101d2e;border:1px solid #293e58;border-radius:7px}
+.deviation-head{display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:10px;margin-bottom:7px}
+.deviation-head strong{color:var(--amber);font-size:11px;font-variant-numeric:tabular-nums}
+.deviation-row input[type=range]{width:100%;accent-color:var(--cyan);margin:0}
+.deviation-row.disabled{opacity:.35}
+.settings-note{font-size:9px;line-height:1.45;color:var(--muted);margin-top:9px}
 </style>
+<link rel="manifest" href="./manifest.json">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Coordination Test">
+<link rel="apple-touch-icon" href="./icons/icon-192.png">
 </head>
 <body>
 <div class="app">
@@ -248,12 +268,12 @@ button{font:inherit;color:inherit}
    <div class="instructions" id="nextTask">Next task: --</div>
   </div>
  </div>
- <div class="action-row"><button class="primary" id="startBtn">START TEST</button><button class="secondary" id="resetBtn">SETTINGS / RESET</button></div>
+ <div class="action-row"><button class="primary" id="startBtn">START TEST</button><button class="secondary" id="resetBtn">RESET</button></div>
  <div class="results" id="results">
   <h2>TEST RESULTS</h2>
   <div class="score-row"><span>Airspeed control</span><strong id="scoreSpeed">N/A</strong></div>
-  <div class="score-row"><span>Altitude control</span><strong id="scoreAlt">N/A</strong></div>
-  <div class="score-row"><span>Heading control</span><strong id="scoreHeading">N/A</strong></div>
+  <div class="score-row"><span>Altitude control</span><strong id="scoreAlt">0%</strong></div>
+  <div class="score-row"><span>Heading control</span><strong id="scoreHeading">0%</strong></div>
   <div class="score-row"><span>Yaw / slip coordination</span><strong id="scoreSlip">N/A</strong></div>
   <div class="final-score" id="finalScore">0%</div>
   <div class="result-note">Training score · Not an official SkyTest score</div>
@@ -271,51 +291,33 @@ button{font:inherit;color:inherit}
   <div class="history-list" id="historyList"></div>
  </div>
 </div>
-
 <div class="overlay" id="intro">
- <div class="overlay-card">
-  <div class="menu-kicker">MANUAL TEST CONFIGURATION</div>
+ <div class="overlay-card level-select-card">
+  <div class="menu-kicker">TRAINING SIMULATOR</div>
   <h1>Extended Coordination Test</h1>
-  <p>Select the parameters you want to train and set each deviation independently.</p>
-
-  <div class="settings-row">
-   <div><div class="settings-name">ALT — Altitude</div><div class="settings-sub">Vertical flight path control</div></div>
-   <input class="settings-check" id="selectAlt" type="checkbox" checked>
+  <p class="menu-intro">Choose which flight parameters to include and set the initial target deviation for each one.</p>
+  <div class="settings-panel">
+   <div class="settings-title">ACTIVE PARAMETERS</div>
+   <div class="param-select">
+    <label class="param-option"><input type="checkbox" id="useAltitude" checked> ALTITUDE</label>
+    <label class="param-option"><input type="checkbox" id="useHeading" checked> HEADING</label>
+    <label class="param-option"><input type="checkbox" id="useSpeed"> AIRSPEED</label>
+    <label class="param-option"><input type="checkbox" id="useSlip"> SLIP BALL</label>
+   </div>
+   <div class="deviation-list">
+    <div class="deviation-row" id="altitudeDeviationRow"><div class="deviation-head"><span>ALTITUDE DEVIATION</span><strong id="altitudeDeviationValue">±1,000 ft</strong></div><input id="altitudeDeviation" type="range" min="200" max="2500" step="100" value="1000"></div>
+    <div class="deviation-row" id="headingDeviationRow"><div class="deviation-head"><span>HEADING DEVIATION</span><strong id="headingDeviationValue">±20°</strong></div><input id="headingDeviation" type="range" min="5" max="60" step="1" value="20"></div>
+    <div class="deviation-row" id="speedDeviationRow"><div class="deviation-head"><span>AIRSPEED DEVIATION</span><strong id="speedDeviationValue">±20 kt</strong></div><input id="speedDeviation" type="range" min="5" max="50" step="1" value="20"></div>
+    <div class="deviation-row" id="slipDeviationRow"><div class="deviation-head"><span>SLIP BALL INITIAL DEVIATION</span><strong id="slipDeviationValue">±65%</strong></div><input id="slipDeviation" type="range" min="51" max="95" step="1" value="65"></div>
+   </div>
+   <div class="settings-note">Each selected parameter receives its own randomly generated target within the selected deviation. Slip Ball deviation controls the initial ball offset for each slip task.</div>
   </div>
-  <div class="slider-wrap" id="altSliderWrap">
-   <div class="slider-head"><span>Altitude deviation</span><strong id="altDevValue">±1,000 ft</strong></div>
-   <input class="deviation-slider" id="altDev" type="range" min="200" max="2500" step="100" value="1000">
+  <div class="deviation-row" style="margin-top:10px">
+   <div class="deviation-head"><span>TEST DURATION</span><strong id="durationValue">2:00 min</strong></div>
+   <input id="durationSlider" type="range" min="60" max="600" step="30" value="120" style="width:100%;accent-color:var(--cyan);margin:0">
+   <div style="display:flex;justify-content:space-between;color:var(--muted);font-size:9px;margin-top:4px"><span>1 min</span><span>10 min</span></div>
   </div>
-
-  <div class="settings-row">
-   <div><div class="settings-name">HDG — Heading</div><div class="settings-sub">Directional control</div></div>
-   <input class="settings-check" id="selectHdg" type="checkbox" checked>
-  </div>
-  <div class="slider-wrap" id="hdgSliderWrap">
-   <div class="slider-head"><span>Heading deviation</span><strong id="hdgDevValue">±20°</strong></div>
-   <input class="deviation-slider" id="hdgDev" type="range" min="5" max="60" step="1" value="20">
-  </div>
-
-  <div class="settings-row">
-   <div><div class="settings-name">SPD — Airspeed</div><div class="settings-sub">Speed and throttle control</div></div>
-   <input class="settings-check" id="selectSpd" type="checkbox">
-  </div>
-  <div class="slider-wrap" id="spdSliderWrap">
-   <div class="slider-head"><span>Speed deviation</span><strong id="spdDevValue">±20 kt</strong></div>
-   <input class="deviation-slider" id="spdDev" type="range" min="5" max="50" step="1" value="20">
-  </div>
-
-  <div class="settings-row">
-   <div><div class="settings-name">SLIP BALL — Yaw coordination</div><div class="settings-sub">Rudder coordination task</div></div>
-   <input class="settings-check" id="selectSlip" type="checkbox">
-  </div>
-  <div class="slider-wrap" id="slipSliderWrap">
-   <div class="slider-head"><span>Initial slip displacement</span><strong id="slipDevValue">±65%</strong></div>
-   <input class="deviation-slider" id="slipDev" type="range" min="51" max="95" step="1" value="65">
-  </div>
-
-  <div class="settings-note">Each selected parameter receives independent random targets. Unselected parameters are excluded from scoring.</div>
-  <button class="primary" id="introStart" style="width:100%">START TEST</button>
+  <button id="introStart">START TEST</button>
  </div>
 </div>
 
@@ -329,67 +331,56 @@ const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
 const wrap360=v=>((v%360)+360)%360;
 const angleDiff=(a,b)=>((a-b+540)%360)-180;
 
+const DEFAULTS={altitude:1000,heading:20,speed:20,slip:65};
 const S={
  selected:{altitude:true,heading:true,speed:false,slip:false},
- deviation:{altitude:1000,heading:20,speed:20,slip:65},
+ deviation:{...DEFAULTS},
  speed:170,altitude:12000,heading:0,pitch:0,bank:0,
  slip:0,slipTarget:0,slipComplete:false,
  joyX:0,joyY:0,rudder:0,throttle:50,
  targetSpeed:170,targetAltitude:12000,targetHeading:0,
- running:false,remaining:120,elapsed:0,lastTime:0,
+ duration:120,running:false,remaining:120,elapsed:0,lastTime:0,
  sampleClock:0,taskClock:0,nextTaskAt:15,
  slipClock:0,nextSlipAt:999999,
  taskNumber:1,samples:[],
  metrics:{reaction:[],overshoots:0,stabilization:[],oscillations:0},
- taskTrack:null,stableClock:0,wasStable:false,chartSamples:[]
+ taskTrack:null,previousErrors:null,stableClock:0,wasStable:false,
+ chartSamples:[]
 };
-
 let raf=null,joyPointer=null,throttlePointer=null;
 const joystick=$('joystick');
 const knob=$('joyKnob');
 
-function config(){
- return {
-  altitude:S.selected.altitude,
-  heading:S.selected.heading,
-  speed:S.selected.speed,
-  slip:S.selected.slip,
-  interval:15
- };
-}
-function selectedCount(){
- return Object.values(S.selected).filter(Boolean).length;
-}
+function config(){return S.selected}
+
 function updateSettingsUI(){
- const pairs=[
-  ['Alt','altitude'],['Hdg','heading'],['Spd','speed'],['Slip','slip']
- ];
- pairs.forEach(([id,key])=>{
+ const mapping=[['Altitude','altitude','ft'],['Heading','heading','°'],['Speed','speed','kt'],['Slip','slip','%']];
+ mapping.forEach(([label,key,unit])=>{
   const enabled=S.selected[key];
-  $('select'+id).checked=enabled;
-  $(''+id.toLowerCase()+'SliderWrap').style.opacity=enabled?'1':'.38';
-  $(''+id.toLowerCase()+'Dev').disabled=!enabled;
+  const row=$(key+'DeviationRow');
+  const checkbox=$('use'+label);
+  const slider=$(key+'Deviation');
+  if(checkbox)checkbox.checked=enabled;
+  if(row)row.classList.toggle('disabled',!enabled);
+  if(slider)slider.disabled=!enabled;
+  const value=$(key+'DeviationValue');
+  if(value)value.textContent='±'+Number(S.deviation[key]).toLocaleString('en-US')+(unit==='ft'?' ft':unit==='kt'?' kt':unit);
  });
- S.deviation.altitude=Number($('altDev').value);
- S.deviation.heading=Number($('hdgDev').value);
- S.deviation.speed=Number($('spdDev').value);
- S.deviation.slip=Number($('slipDev').value);
- $('altDevValue').textContent='±'+S.deviation.altitude.toLocaleString('en-US')+' ft';
- $('hdgDevValue').textContent='±'+S.deviation.heading+'°';
- $('spdDevValue').textContent='±'+S.deviation.speed+' kt';
- $('slipDevValue').textContent='±'+S.deviation.slip+'%';
 }
-[
- ['selectAlt','altitude'],['selectHdg','heading'],
- ['selectSpd','speed'],['selectSlip','slip']
-].forEach(([id,key])=>{
- $(id).addEventListener('change',()=>{
-  S.selected[key]=$(id).checked;
+$('durationSlider').addEventListener('input',e=>{
+ S.duration=Number(e.target.value);
+ const mins=Math.floor(S.duration/60),secs=S.duration%60;
+ $('durationValue').textContent=mins+':'+String(secs).padStart(2,'0')+' min';
+});
+[['Altitude','altitude'],['Heading','heading'],['Speed','speed'],['Slip','slip']].forEach(([label,key])=>{
+ $('use'+label).addEventListener('change',e=>{
+  S.selected[key]=e.target.checked;
   updateSettingsUI();
  });
-});
-['altDev','hdgDev','spdDev','slipDev'].forEach(id=>{
- $(id).addEventListener('input',updateSettingsUI);
+ $(''+key+'Deviation').addEventListener('input',e=>{
+  S.deviation[key]=Number(e.target.value);
+  updateSettingsUI();
+ });
 });
 
 function setJoy(x,y){
@@ -407,8 +398,10 @@ function moveJoy(e){
 }
 joystick.addEventListener('pointerdown',e=>{
  if(!S.running)return;
- e.preventDefault();joyPointer=e.pointerId;
- joystick.setPointerCapture(e.pointerId);moveJoy(e);
+ e.preventDefault();
+ joyPointer=e.pointerId;
+ joystick.setPointerCapture(e.pointerId);
+ moveJoy(e);
 });
 joystick.addEventListener('pointermove',e=>{
  if(e.pointerId===joyPointer)moveJoy(e);
@@ -423,7 +416,7 @@ joystick.addEventListener('lostpointercapture',()=>{
  joyPointer=null;setJoy(0,0);
 });
 
-/* Independent throttle pointer */
+/* Independent throttle pointer: works at the same time as joystick touch. */
 const throttleTrack=document.querySelector('.throttle-track');
 function setThrottleFromPointer(e){
  const r=throttleTrack.getBoundingClientRect();
@@ -433,7 +426,8 @@ function setThrottleFromPointer(e){
 }
 throttleTrack.addEventListener('pointerdown',e=>{
  if(!S.running)return;
- e.preventDefault();throttlePointer=e.pointerId;
+ e.preventDefault();
+ throttlePointer=e.pointerId;
  throttleTrack.setPointerCapture(e.pointerId);
  setThrottleFromPointer(e);
 });
@@ -454,13 +448,15 @@ function updateThrottleDisplay(){
  $('throttleValue').textContent=value+'%';
  $('throttleSide').textContent=value+'%';
 }
+
 function bindHold(id,callback){
  const el=$(id);
  el.addEventListener('pointerdown',e=>{
-  if(!S.running||!S.selected.slip)return;
+  if(!S.running||!config().slip)return;
   e.preventDefault();
   el.setPointerCapture(e.pointerId);
-  el.classList.add('active');callback(true);
+  el.classList.add('active');
+  callback(true);
  });
  const stop=()=>{
   el.classList.remove('active');callback(false);
@@ -487,7 +483,7 @@ function keyboard(){
  if(keys.arrowup)S.throttle=clamp(S.throttle+.8,0,100);
  if(keys.arrowdown)S.throttle=clamp(S.throttle-.8,0,100);
  updateThrottleDisplay();
- if(S.selected.slip){
+ if(config().slip){
   if(keys.z)S.rudder=-1;
   else if(keys.x)S.rudder=1;
   else if(!document.querySelector('.rudder-btn.active'))S.rudder=0;
@@ -513,6 +509,7 @@ function renderVerticalTape(containerId,value,step,majorEvery,format,target){
  if(targetY>=0&&targetY<=height)html+=`<div class="tape-target" style="top:${targetY}px"></div>`;
  el.innerHTML=html;
 }
+
 function renderHeadingTape(){
  const el=$('headingScale'),width=el.clientWidth,center=width/2,px=2.1;
  let html='';
@@ -525,75 +522,58 @@ function renderHeadingTape(){
  if(targetX>=0&&targetX<=width)html+=`<div class="heading-target" style="left:${targetX}px"></div>`;
  el.innerHTML=html;
 }
+
 function renderTargets(){
- const c=config();
- $('targetAltitude').innerHTML=c.altitude?
-  `${Math.round(S.targetAltitude).toLocaleString('en-US')} <span>FT</span>`:'OFF';
- $('targetHeading').textContent=c.heading?
-  String(Math.round(S.targetHeading)).padStart(3,'0')+'°':'OFF';
- $('targetSpeed').innerHTML=c.speed?
-  `${Math.round(S.targetSpeed)} <span>KT</span>`:'OFF';
- const labels=[];
- if(c.heading)labels.push('HDG '+String(Math.round(S.targetHeading)).padStart(3,'0')+'°');
- if(c.altitude)labels.push('ALT '+Math.round(S.targetAltitude).toLocaleString('en-US')+' FT');
- if(c.speed)labels.push('IAS '+Math.round(S.targetSpeed)+' KT');
- if(c.slip)labels.push('SLIP');
- $('taskLine').textContent=`TASK ${String(S.taskNumber).padStart(2,'0')} · ${labels.join(' · ')}`;
+ $('targetAltitude').innerHTML=`${Math.round(S.targetAltitude).toLocaleString('en-US')} <span>FT</span>`;
+ $('targetHeading').textContent=String(Math.round(S.targetHeading)).padStart(3,'0')+'°';
+ $('targetSpeed').innerHTML=`${Math.round(S.targetSpeed)} <span>KT</span>`;
+ $('taskLine').textContent=
+  `TASK ${String(S.taskNumber).padStart(2,'0')} · HDG ${String(Math.round(S.targetHeading)).padStart(3,'0')}° · ALT ${Math.round(S.targetAltitude).toLocaleString('en-US')} FT`+
+  (config().speed?` · IAS ${Math.round(S.targetSpeed)} KT`:'')+(config().slip?' · SLIP':'');
 }
+
 function newTask(initial=false){
  const c=config();
  if(!initial)S.taskNumber++;
  if(c.heading){
-  const max=S.deviation.heading;
-  const offset=(Math.random()<.5?-1:1)*(Math.min(5,max)+Math.random()*Math.max(0,max-Math.min(5,max)));
+  const d=S.deviation.heading;
+  const offset=(Math.random()<.5?-1:1)*(Math.min(5,d)+Math.random()*Math.max(0,d-Math.min(5,d)));
   S.targetHeading=wrap360(S.heading+offset);
  }else S.targetHeading=S.heading;
-
  if(c.altitude){
-  const max=S.deviation.altitude;
-  const offset=(Math.random()<.5?-1:1)*(Math.min(200,max)+Math.random()*Math.max(0,max-Math.min(200,max)));
+  const d=S.deviation.altitude;
+  const offset=(Math.random()<.5?-1:1)*(Math.min(200,d)+Math.random()*Math.max(0,d-Math.min(200,d)));
   S.targetAltitude=clamp(Math.round((S.altitude+offset)/100)*100,8000,16000);
  }else S.targetAltitude=S.altitude;
-
  if(c.speed){
-  const max=S.deviation.speed;
-  const offset=(Math.random()<.5?-1:1)*(Math.min(5,max)+Math.random()*Math.max(0,max-Math.min(5,max)));
+  const d=S.deviation.speed;
+  const offset=(Math.random()<.5?-1:1)*(Math.min(5,d)+Math.random()*Math.max(0,d-Math.min(5,d)));
   S.targetSpeed=clamp(Math.round((S.speed+offset)/5)*5,120,220);
- }else S.targetSpeed=S.speed;
-
+ }else S.targetSpeed=170;
  S.taskClock=0;S.nextTaskAt=15;
  S.taskTrack={
-  startedAt:S.elapsed,reacted:false,stableAt:null,
-  sampleStart:S.samples.length,
+  startedAt:S.elapsed,reacted:false,stableAt:null,sampleStart:S.samples.length,
   crossed:{heading:false,altitude:false,speed:false},
-  previous:{
-   heading:angleDiff(S.targetHeading,S.heading),
-   altitude:S.targetAltitude-S.altitude,
-   speed:S.targetSpeed-S.speed
-  },
-  best:{
-   heading:Math.abs(angleDiff(S.targetHeading,S.heading)),
-   altitude:Math.abs(S.targetAltitude-S.altitude),
-   speed:Math.abs(S.targetSpeed-S.speed)
-  }
+  previous:{heading:angleDiff(S.targetHeading,S.heading),altitude:S.targetAltitude-S.altitude,speed:S.targetSpeed-S.speed},
+  best:{heading:Math.abs(angleDiff(S.targetHeading,S.heading)),altitude:Math.abs(S.targetAltitude-S.altitude),speed:Math.abs(S.targetSpeed-S.speed)}
  };
  S.wasStable=false;S.stableClock=0;
  renderTargets();
 }
 function newSlipEvent(){
- if(!S.selected.slip){
+ if(!config().slip){
   S.slip=0;S.slipComplete=false;S.rudder=0;
   S.slipClock=0;S.nextSlipAt=999999;return;
  }
  const direction=Math.random()<.5?-1:1;
- S.slip=direction*S.deviation.slip;
+ S.slip=direction*(S.deviation.slip+(Math.random()*6-3));
  S.slipTarget=0;S.slipComplete=false;S.rudder=0;
  S.slipClock=0;S.nextSlipAt=6+Math.random();
 }
 
 function physics(dt){
  keyboard();
- if(!S.selected.speed){
+ if(!config().speed){
   S.speed=170;
  }else{
   const throttleAcceleration=(S.throttle-50)*.18;
@@ -607,23 +587,19 @@ function physics(dt){
  if(Math.abs(S.joyX)<.03)S.bank*=Math.pow(.997,dt*60);
  S.heading=wrap360(S.heading+Math.sin(S.bank*Math.PI/180)*8.5*dt);
  S.altitude=Math.max(0,S.altitude+S.pitch*180*dt/60);
- if(S.selected.slip&&!S.slipComplete&&S.rudder!==0){
+ if(config().slip&&!S.slipComplete&&S.rudder!==0){
   S.slip=clamp(S.slip+S.rudder*65*dt,-100,100);
   if(Math.abs(S.slip)<=50){S.slipComplete=true;S.rudder=0}
  }
 }
 
 function updateFD(){
- const c=config();
- const hdgError=c.heading?angleDiff(S.targetHeading,S.heading):0;
- const altError=c.altitude?S.targetAltitude-S.altitude:0;
- const x=clamp(hdgError*1.05,-55,55);
- const y=clamp(-altError*.045,-48,48);
+ const hdgError=angleDiff(S.targetHeading,S.heading),altError=S.targetAltitude-S.altitude;
+ const x=clamp(hdgError*1.05,-55,55),y=clamp(-altError*.045,-48,48);
  $('fdCommand').style.transform=`translate(${x}px,${y}px)`;
 }
-function score(e,scale){
- return clamp(100*(1-Math.abs(e)/Math.max(1,scale)),0,100);
-}
+
+function score(e,scale){return clamp(100*(1-Math.abs(e)/scale),0,100)}
 function taskErrors(){
  return {
   heading:angleDiff(S.heading,S.targetHeading),
@@ -631,35 +607,41 @@ function taskErrors(){
   speed:S.speed-S.targetSpeed
  };
 }
+function taskStable(){
+ const c=config(),e=taskErrors();
+ return (!c.heading || Math.abs(e.heading)<=3) &&
+  (!c.altitude || Math.abs(e.altitude)<=150) &&
+  (!c.speed || Math.abs(e.speed)<=5);
+}
 function trackTaskMetrics(){
  if(!S.taskTrack)return;
- const c=config(),e=taskErrors(),tr=S.taskTrack;
+ const tr=S.taskTrack,c=config(),e=taskErrors();
  const active=[];
  if(c.heading)active.push('heading');
  if(c.altitude)active.push('altitude');
  if(c.speed)active.push('speed');
  let improved=false,allNear=active.length>0;
  active.forEach(k=>{
-  const now=e[k],prev=tr.previous[k];
+  const prev=tr.previous[k],now=e[k];
   if(Math.abs(now)<Math.abs(prev)-.35)improved=true;
-  if(Math.abs(now)>tr.best[k]+1&&!tr.crossed[k]){
-   if(prev*now<0&&Math.abs(prev)<(k==='altitude'?350:12)){
+  if(Math.abs(now)>tr.best[k]+1 && Math.abs(prev)<=tr.best[k]+1 && !tr.crossed[k]){
+   if(prev*now<0 && Math.abs(prev)<Math.max(8,k==='altitude'?350:12)){
     tr.crossed[k]=true;S.metrics.overshoots++;
    }
   }
   tr.best[k]=Math.min(tr.best[k],Math.abs(now));
-  const limit=k==='heading'?3:k==='altitude'?150:5;
-  if(Math.abs(now)>limit)allNear=false;
+  if(Math.abs(now)>(k==='heading'?3:k==='altitude'?150:5))allNear=false;
   tr.previous[k]=now;
  });
- if(!tr.reacted&&improved){
+ if(!tr.reacted && improved){
   tr.reacted=true;
   S.metrics.reaction.push(Math.max(0,S.elapsed-tr.startedAt));
  }
  if(allNear){
   S.stableClock+=.2;
-  if(!S.wasStable&&S.stableClock>=1){
-   S.wasStable=true;tr.stableAt=S.elapsed;
+  if(!S.wasStable && S.stableClock>=1){
+   S.wasStable=true;
+   tr.stableAt=S.elapsed;
    S.metrics.stabilization.push(Math.max(0,S.elapsed-tr.startedAt));
   }
  }else{
@@ -667,9 +649,9 @@ function trackTaskMetrics(){
   S.wasStable=false;S.stableClock=0;
  }
 }
+
 function drawPerformanceChart(){
- const canvas=$('performanceChart');
- if(!canvas)return;
+ const canvas=$('performanceChart');if(!canvas)return;
  const ctx=canvas.getContext('2d'),w=canvas.width,h=canvas.height;
  ctx.clearRect(0,0,w,h);
  ctx.strokeStyle='#34465f';ctx.lineWidth=1;
@@ -677,10 +659,11 @@ function drawPerformanceChart(){
   const y=12+i*(h-32)/4;
   ctx.beginPath();ctx.moveTo(36,y);ctx.lineTo(w-8,y);ctx.stroke();
  }
- const series=['heading','altitude','speed','slip']
-  .filter(k=>S.chartSamples.some(x=>x[k]!==null));
+ const series=[
+  ['heading','#52d8ed'],['altitude','#54df9b'],['speed','#f5d15a'],['slip','#ed39df']
+ ].filter(([k])=>S.chartSamples.some(x=>x[k]!==null));
  const colors={heading:'#52d8ed',altitude:'#54df9b',speed:'#f5d15a',slip:'#ed39df'};
- series.forEach(key=>{
+ series.forEach(([key])=>{
   ctx.strokeStyle=colors[key];ctx.lineWidth=2;ctx.beginPath();
   let started=false;
   S.chartSamples.forEach((sample,i)=>{
@@ -693,29 +676,32 @@ function drawPerformanceChart(){
  });
  ctx.fillStyle='#aebed0';ctx.font='11px Arial';
  ctx.fillText('100%',3,17);ctx.fillText('50%',7,h/2);ctx.fillText('0%',12,h-18);
- let x=42;
- series.forEach(key=>{
-  ctx.fillStyle=colors[key];ctx.fillText(key.toUpperCase(),x,h-3);x+=85;
+ ctx.fillStyle='#52d8ed';ctx.fillText('HDG',42,h-3);
+ let x=92;
+ series.slice(1).forEach(([key])=>{
+  ctx.fillStyle=colors[key];ctx.fillText(key.toUpperCase(),x,h-3);x+=76;
  });
 }
+
 function loadHistory(){
- try{
-  const h=JSON.parse(localStorage.getItem('ectHistory')||'[]');
-  return Array.isArray(h)?h:[];
- }catch(e){return []}
+ let history=[];
+ try{history=JSON.parse(localStorage.getItem('ectHistory')||'[]')}catch(e){}
+ return Array.isArray(history)?history:[];
 }
 function renderHistory(){
+ const list=$('historyList');if(!list)return;
  const history=loadHistory();
- $('historyList').innerHTML=history.length?
-  history.slice(0,8).map(item=>
-   `<div class="history-item"><span>${item.date} · ${item.mode}</span><strong>${item.score}%</strong></div>`
-  ).join(''):
-  '<div class="instructions">No previous tests stored on this device.</div>';
+ list.innerHTML=history.length?history.slice(0,8).map(item=>
+  `<div class="history-item"><span>${item.date} · ${item.mode}</span><strong>${item.score}%</strong></div>`
+ ).join(''):'<div class="instructions">No previous tests stored on this device.</div>';
 }
 function saveHistory(scoreValue){
  const history=loadHistory();
- const mode=Object.keys(S.selected).filter(k=>S.selected[k]).map(k=>k.toUpperCase()).join(' + ');
- history.unshift({date:new Date().toLocaleString(),mode,score:Math.round(scoreValue)});
+ history.unshift({
+  date:new Date().toLocaleString(),
+  mode:Object.keys(S.selected).filter(k=>S.selected[k]).map(k=>k.toUpperCase()).join(' + '),
+  score:Math.round(scoreValue)
+ });
  try{localStorage.setItem('ectHistory',JSON.stringify(history.slice(0,20)))}catch(e){}
  renderHistory();
 }
@@ -749,18 +735,23 @@ function render(){
  bankReadout.classList.remove('green','yellow','red');
  bankReadout.classList.add(bankClass);
  $('horizon').style.transform=`translateY(${S.pitch*2.1}px) rotate(${-S.bank}deg)`;
+
  const slipPosition=50+S.slip*.20;
  $('slipBall').style.left=`${clamp(slipPosition,0,100)}%`;
  $('slipBall').classList.toggle('complete',S.slipComplete);
+
  renderVerticalTape('speedTape',S.speed,5,2,n=>Math.round(n),S.targetSpeed);
  $('speedPointer').textContent=Math.round(S.speed);
  renderVerticalTape('altTape',S.altitude,100,2,n=>Math.round(n),S.targetAltitude);
  $('altPointer').textContent=Math.round(S.altitude/100)*100;
  renderHeadingTape();updateFD();
+
+ const hdgErr=Math.abs(angleDiff(S.heading,S.targetHeading));
+ const altErr=Math.abs(S.altitude-S.targetAltitude);
  const values=[
   ['iasError',Math.abs(S.speed-S.targetSpeed),' kt',S.deviation.speed,!c.speed],
-  ['altError',Math.abs(S.altitude-S.targetAltitude),' ft',S.deviation.altitude,!c.altitude],
-  ['hdgError',Math.abs(angleDiff(S.heading,S.targetHeading)),'°',S.deviation.heading,!c.heading],
+  ['altError',altErr,' ft',S.deviation.altitude,!c.altitude],
+  ['hdgError',hdgErr,'°',S.deviation.heading,!c.heading],
   ['slipError',S.slipComplete?0:Math.abs(S.slip),'%',S.deviation.slip,!c.slip]
  ];
  values.forEach(([id,v,u,limit,disabled])=>{
@@ -780,9 +771,9 @@ function timer(){
  const s=Math.ceil(S.remaining);
  $('timer').textContent=String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0');
 }
+
 function finish(){
- S.running=false;cancelAnimationFrame(raf);
- setJoy(0,0);S.rudder=0;
+ S.running=false;cancelAnimationFrame(raf);setJoy(0,0);S.rudder=0;
  const c=config();
  const scores={
   speed:c.speed?avg('speed'):null,
@@ -794,9 +785,13 @@ function finish(){
  $('scoreAlt').textContent=scores.altitude===null?'N/A':Math.round(scores.altitude)+'%';
  $('scoreHeading').textContent=scores.heading===null?'N/A':Math.round(scores.heading)+'%';
  $('scoreSlip').textContent=scores.slip===null?'N/A':Math.round(scores.slip)+'%';
- const activeScores=Object.values(scores).filter(v=>v!==null);
- const finalValue=activeScores.length?
-  activeScores.reduce((x,y)=>x+y,0)/activeScores.length:0;
+
+ const activeScores=[];
+ if(scores.altitude!==null)activeScores.push(scores.altitude);
+ if(scores.heading!==null)activeScores.push(scores.heading);
+ if(scores.speed!==null)activeScores.push(scores.speed);
+ if(scores.slip!==null)activeScores.push(scores.slip);
+ const finalValue=activeScores.reduce((x,y)=>x+y,0)/activeScores.length;
  $('finalScore').textContent=Math.round(finalValue)+'%';
  $('reactionResult').textContent=S.metrics.reaction.length?
   (S.metrics.reaction.reduce((a,b)=>a+b,0)/S.metrics.reaction.length).toFixed(2)+' s':'No response';
@@ -804,6 +799,7 @@ function finish(){
  $('stabilityResult').textContent=S.metrics.stabilization.length?
   (S.metrics.stabilization.reduce((a,b)=>a+b,0)/S.metrics.stabilization.length).toFixed(1)+' s':'—';
  $('oscillationResult').textContent=S.metrics.oscillations;
+
  saveHistory(finalValue);drawPerformanceChart();
  $('results').style.display='block';
  $('status').textContent='TEST COMPLETED';
@@ -811,16 +807,15 @@ function finish(){
  $('startBtn').disabled=false;
  $('results').scrollIntoView({behavior:'smooth',block:'nearest'});
 }
+
 function loop(t){
  if(!S.running)return;
- const dt=Math.min((t-S.lastTime)/1000,.05);
- S.lastTime=t;
+ const dt=Math.min((t-S.lastTime)/1000,.05);S.lastTime=t;
  physics(dt);
- S.remaining-=dt;S.elapsed+=dt;
- S.taskClock+=dt;S.sampleClock+=dt;
- if(S.selected.slip)S.slipClock+=dt;
+ S.remaining-=dt;S.elapsed+=dt;S.taskClock+=dt;S.sampleClock+=dt;
+ if(config().slip)S.slipClock+=dt;
  if(S.taskClock>=S.nextTaskAt)newTask();
- if(S.selected.slip&&S.slipClock>=S.nextSlipAt)newSlipEvent();
+ if(config().slip&&S.slipClock>=S.nextSlipAt)newSlipEvent();
  if(S.sampleClock>=.2){scoreSample();S.sampleClock=0}
  timer();render();
  if(S.remaining<=0){
@@ -828,61 +823,69 @@ function loop(t){
  }
  raf=requestAnimationFrame(loop);
 }
+
 function start(){
  if(S.running)return;
- updateSettingsUI();
- if(selectedCount()===0){
-  alert('En az bir parametre seçmelisin.');
-  return;
+ if(!Object.values(S.selected).some(Boolean)){
+  alert('Select at least one parameter.');return;
  }
+ updateSettingsUI();
  $('intro').classList.add('hidden');
  $('results').style.display='none';
- S.running=true;S.remaining=120;S.elapsed=0;
+ S.running=true;S.remaining=S.duration;S.elapsed=0;
  S.lastTime=performance.now();S.sampleClock=0;
  S.samples=[];S.chartSamples=[];
  S.metrics={reaction:[],overshoots:0,stabilization:[],oscillations:0};
- S.taskNumber=1;S.taskTrack=null;S.stableClock=0;S.wasStable=false;
+ S.taskNumber=1;S.taskTrack=null;S.previousErrors=null;
+ S.stableClock=0;S.wasStable=false;
  newTask(true);newSlipEvent();
  $('status').textContent='TEST IN PROGRESS';
- $('startBtn').textContent='TEST RUNNING';
- $('startBtn').disabled=true;
+ $('startBtn').textContent='TEST RUNNING';$('startBtn').disabled=true;
  raf=requestAnimationFrame(loop);
 }
+
 function reset(){
- S.running=false;
- if(raf)cancelAnimationFrame(raf);
+ S.running=false;if(raf)cancelAnimationFrame(raf);
  throttlePointer=null;joyPointer=null;
  Object.assign(S,{
   speed:170,altitude:12000,heading:0,pitch:0,bank:0,
   slip:0,slipTarget:0,slipComplete:false,
   joyX:0,joyY:0,rudder:0,throttle:50,
   targetSpeed:170,targetAltitude:12000,targetHeading:0,
-  remaining:120,elapsed:0,sampleClock:0,taskClock:0,
+  remaining:S.duration,elapsed:0,sampleClock:0,taskClock:0,
   slipClock:0,nextSlipAt:999999,nextTaskAt:15,
   taskNumber:1,samples:[],
   metrics:{reaction:[],overshoots:0,stabilization:[],oscillations:0},
-  taskTrack:null,stableClock:0,wasStable:false,chartSamples:[]
+  taskTrack:null,previousErrors:null,stableClock:0,wasStable:false,chartSamples:[]
  });
  setJoy(0,0);updateThrottleDisplay();
  $('results').style.display='none';
- $('startBtn').disabled=false;
- $('startBtn').textContent='START TEST';
+ $('startBtn').disabled=false;$('startBtn').textContent='START TEST';
  $('status').textContent='READY · TRAINING MODE';
- newTask(true);newSlipEvent();
- updateSettingsUI();timer();render();
+ newTask(true);newSlipEvent();updateSettingsUI();timer();render();
 }
 
 $('startBtn').addEventListener('click',start);
 $('introStart').addEventListener('click',start);
 $('resetBtn').addEventListener('click',()=>{
- reset();
- $('intro').classList.remove('hidden');
+ reset();$('intro').classList.remove('hidden');
 });
 window.addEventListener('resize',render);
 
-updateThrottleDisplay();
-updateSettingsUI();
-newTask(true);newSlipEvent();
-timer();render();renderHistory();
+updateThrottleDisplay();updateSettingsUI();
+$('durationSlider').value=S.duration;
+$('durationValue').textContent=Math.floor(S.duration/60)+':'+String(S.duration%60).padStart(2,'0')+' min';
+newTask(true);newSlipEvent();timer();render();renderHistory();
 })();
 </script>
+
+<script>
+if ('serviceWorker' in navigator) {
+ window.addEventListener('load',()=>{
+  navigator.serviceWorker.register('./sw.js',{scope:'./'})
+   .catch(err=>console.error('Offline setup failed:',err));
+ });
+}
+</script>
+</body>
+</html>
